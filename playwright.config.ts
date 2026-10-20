@@ -1,0 +1,3 @@
+import{defineConfig}from'@playwright/test';
+const command=`"${process.execPath}" --import tsx server/index.ts`;
+export default defineConfig({testDir:'./e2e',workers:1,timeout:90000,expect:{timeout:10000},reporter:[['list'],['html',{open:'never'}]],use:{browserName:'chromium',headless:true,trace:'retain-on-failure',screenshot:'only-on-failure'},webServer:[{command,url:'http://127.0.0.1:3101/api/health',env:{NODE_ENV:'development',PORT:'3101',CHAT_DATA_DIR:'.chat-test-data/e2e-dev'},reuseExistingServer:false,timeout:60000},{command,url:'http://127.0.0.1:3102/api/health',env:{NODE_ENV:'production',PORT:'3102',CHAT_DATA_DIR:'.chat-test-data/e2e-prod'},reuseExistingServer:false,timeout:60000}]});

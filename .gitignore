@@ -1,0 +1,52 @@
+
+# Node.js
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# SQLite
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# KakaoTalk actual data
+data/
+uploads/
+imports/
+*.txt
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Chat analysis test data
+.chat-test-data/
+
+# SQLite databases and temporary files
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Actual KakaoTalk data
+data/
+uploads/
+.env
+.env.*
+!.env.example

@@ -1,0 +1,115 @@
+{
+  "at": "2026-10-20T08:30:24.589Z",
+  "node": "v24.19.0",
+  "synthetic": true,
+  "results": [
+    {
+      "messages": 10000,
+      "bytes": 861807,
+      "import": {
+        "id": "bbe0650f-7cbe-49fe-9cfc-bdf09c42cd1e",
+        "hash": "39cde1bb0d5c1561bcb73eade8630b1b0b38efa399390f191b79ed98b73b6912",
+        "messages": 10000,
+        "errors": 0,
+        "lines": 10009,
+        "bytes": 861807,
+        "elapsedMs": 485,
+        "peakRssBytes": 120897536
+      },
+      "importWallMs": 714,
+      "statisticsMs": 119,
+      "statisticsPeakRssBytes": 120082432,
+      "questions": {
+        "questions": 78,
+        "elapsedMs": 102,
+        "types": [
+          "speaker",
+          "habit",
+          "battle",
+          "year",
+          "blank",
+          "sequence",
+          "cringe",
+          "defend"
+        ]
+      },
+      "healthSamples": 13,
+      "healthP95Ms": 17,
+      "healthMaxMs": 17,
+      "concurrentGameRoundMs": 3,
+      "missing": 0
+    },
+    {
+      "messages": 100000,
+      "bytes": 8613120,
+      "import": {
+        "id": "f8932283-cfaa-47ab-9e0a-003ec14fd767",
+        "hash": "ad6942e99c6d7cbf982c1cb96d5b1e34f16e69b80d6ba3b4fdfad86a91c50c9f",
+        "messages": 100000,
+        "errors": 0,
+        "lines": 100009,
+        "bytes": 8613120,
+        "elapsedMs": 3512,
+        "peakRssBytes": 143089664
+      },
+      "importWallMs": 3896,
+      "statisticsMs": 1349,
+      "statisticsPeakRssBytes": 138129408,
+      "questions": {
+        "questions": 78,
+        "elapsedMs": 824,
+        "types": [
+          "speaker",
+          "habit",
+          "battle",
+          "year",
+          "blank",
+          "sequence",
+          "cringe",
+          "defend"
+        ]
+      },
+      "healthSamples": 62,
+      "healthP95Ms": 17,
+      "healthMaxMs": 17,
+      "concurrentGameRoundMs": 2,
+      "missing": 0
+    },
+    {
+      "messages": 1000000,
+      "bytes": 104857600,
+      "import": {
+        "id": "a9f83264-4b7d-417d-a910-46860a22317e",
+        "hash": "e041f4bcebdca04fe5064ace9db4306c1a5352a9c10b4533155d846caebeb928",
+        "messages": 1000000,
+        "errors": 0,
+        "lines": 1000009,
+        "bytes": 104857600,
+        "elapsedMs": 41024,
+        "peakRssBytes": 232173568
+      },
+      "importWallMs": 41570,
+      "statisticsMs": 13352,
+      "statisticsPeakRssBytes": 227065856,
+      "questions": {
+        "questions": 609,
+        "elapsedMs": 9210,
+        "types": [
+          "speaker",
+          "habit",
+          "battle",
+          "year",
+          "blank",
+          "sequence",
+          "cringe",
+          "defend"
+        ]
+      },
+      "healthSamples": 603,
+      "healthP95Ms": 17,
+      "healthMaxMs": 18,
+      "concurrentGameRoundMs": 4,
+      "missing": 0
+    }
+  ]
+}

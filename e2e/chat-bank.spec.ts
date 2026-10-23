@@ -1,0 +1,23 @@
+import {test,expect} from '@playwright/test';
+import {mkdtempSync,mkdirSync,readFileSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import {writeFixture,appendContextFixture} from '../scripts/chat-fixture';
+test('문제은행 생성 완료 자동 갱신·AUTO_READY API·맥락 기본 표시·빈 이유·오류 복구·제외 보존',async({page})=>{
+ const base='http://127.0.0.1:3101';await page.goto(base);await page.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(page.getByTestId('arcade')).toHaveAttribute('data-role','host');const session=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('arcade-session')!));const headers={'x-room-code':session.code,authorization:'Bearer '+session.token};
+ const api=async(path:string,data?:any)=>{const r=await page.request.fetch(base+'/api/chat/'+path,{method:data===undefined?'GET':'POST',headers,...(data===undefined?{}:{data})});expect(r.ok()).toBe(true);return r.json();};
+ await page.request.delete(base+'/api/chat/data',{headers:{...headers,'x-confirm-delete':'DELETE LOCAL CHAT DATA'}});
+ await page.getByRole('button',{name:'💬 카카오톡 분석 · 문제은행 열기',exact:true}).click();await expect(page.getByTestId('question-empty-reason')).toContainText('DB');
+ const root=resolve('.chat-test-data');mkdirSync(root,{recursive:true});const dir=mkdtempSync(join(root,'bank-ui-')),file=join(dir,'virtual.txt');await writeFixture(file,300);appendContextFixture(file);
+ const uploaded=await page.request.post(base+'/api/chat/import',{headers:{...headers,'x-chat-encoding':'utf-8','x-chat-filename':'virtual.txt'},data:readFileSync(file)});expect(uploaded.ok()).toBe(true);const job=await uploaded.json();
+ const wait=async(id:string)=>{await expect.poll(async()=>{const j=(await api('jobs')).find((j:any)=>j.id===id);if(j.status==='failed')throw Error('작업 실패');return j.status;},{timeout:30000}).toBe('completed');};await wait(job.id);await wait((await api('analyze',{})).id);
+ await page.getByRole('tab',{name:/^말버릇 맞히기/}).click();await expect(page.getByRole('button',{name:'8종 문제 후보 생성',exact:true})).toBeEnabled();await page.getByRole('button',{name:'8종 문제 후보 생성',exact:true}).click();
+ await expect.poll(async()=>Number(await page.getByTestId('auto-ready-count').innerText())).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('article.chat-question').count()).toBeGreaterThan(0);
+ const first=await api('questions?meta=1&game=chat-habit&version=3&status=pending');expect(first.total).toBeGreaterThan(0);expect(first.items.every((q:any)=>q.reviewStatus==='pending'&&q.engineVersion===3&&q.generationBatchId)).toBe(true);expect(first.diagnostics.batch.status).toBe('completed');expect(first.diagnostics.batch.backupPath).toContain('backups');
+ expect(await page.locator('article.chat-question').first().locator('.chat-bubble').count()).toBeGreaterThan(1);
+ for(const q of first.items.filter((q:any)=>['speaker','sequence','cringe','defend'].includes(q.questionType)))expect(q.previewMessages.filter((m:any)=>m.target).every((m:any)=>m.speaker==='???')).toBe(true);
+ const id=first.items[0].id;await api('question/'+id,{reviewStatus:'approved'});const approved=await api('questions?meta=1&game=chat-habit&status=approved');expect(approved.items.some((q:any)=>q.id===id)).toBe(true);await api(`question/${id}/feedback`,{label:'제외'});await wait((await api('generate',{})).id);const excluded=await api('questions?meta=1&status=EXCLUDED&search='+id);expect(excluded.total).toBe(1);expect(excluded.items[0].availability).toBe('EXCLUDED');
+ await page.getByLabel('문제 검색',{exact:true}).fill('존재하지않는가상필터');await expect(page.getByTestId('question-empty-reason')).toContainText('필터');await page.getByLabel('문제 검색',{exact:true}).fill('');await expect.poll(()=>page.locator('article.chat-question').count()).toBeGreaterThan(0);
+ await page.route('**/api/chat/questions?**',r=>r.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'테스트용 API 실패'})}));await page.getByRole('button',{name:'목록 새로고침',exact:true}).click();await expect(page.getByTestId('question-empty-reason')).toContainText('API 조회 실패');await page.unroute('**/api/chat/questions?**');await page.getByRole('button',{name:'목록 새로고침',exact:true}).click();await expect.poll(()=>page.locator('article.chat-question').count()).toBeGreaterThan(0);
+ await page.reload();await page.getByRole('button',{name:'💬 카카오톡 분석 · 문제은행 열기',exact:true}).click();await page.getByRole('tab',{name:/^말버릇 맞히기/}).click();await expect.poll(()=>page.locator('article.chat-question').count()).toBeGreaterThan(0);
+});

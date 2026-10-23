@@ -1,0 +1,4 @@
+import {all,type DB} from './db';
+import {identityLeak,informationReason} from './speaker-quality';
+export function speakerNames(db:DB,participantId:string,extra:string[]=[]){return [...all(db,'SELECT rawName name FROM ChatSenderAlias WHERE participantId=? UNION SELECT name FROM ChatParticipant WHERE id=? UNION SELECT alias name FROM ChatSpeakerAlias WHERE participantId=?',participantId,participantId,participantId).map(p=>p.name),...extra];}
+export function safeSpeakerCore(db:DB,q:any,names:string[]=[]){const rows=all(db,'SELECT m.* FROM ChatQuestionSource s JOIN ChatMessage m ON m.id=s.messageId WHERE s.questionId=? ORDER BY s.ordinal,m.id',q.id);return !informationReason(rows.map(m=>m.originalText).join('\n'),{attachment:rows.some(m=>JSON.parse(m.flags||'{}').attachment)})&&rows.length>=1&&rows.length<=2&&rows.every(m=>m.participantId===q.correctParticipantId&&!identityLeak(m.originalText,speakerNames(db,q.correctParticipantId,names)));}

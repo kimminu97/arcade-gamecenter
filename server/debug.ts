@@ -16,11 +16,11 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  const key=`${g.id}:${g.phase}`;if(bot.attempted===key||g.phase!=='draw'&&g.submitted.includes(bot.id))return;
  let value:unknown;
  if(g.phase==='quiz'&&g.quiz)value=g.quiz.options[randomInt(g.quiz.options.length)].id;
- else if(g.phase==='explain'&&g.quiz){if(g.quiz.defendantPlayerId!==bot.id)return;value='그때는 주파수가 잠깐 흔들렸습니다. 지금은 정상 수신 중입니다!';}
- else if(g.phase==='jury'&&g.quiz){if(g.quiz.defendantPlayerId===bot.id)return;value=randomInt(1,6);}
- else if(g.phase==='answer')value=['오늘의 주인공','생각보다 신중한 친구','게임에 진심인 친구','가평의 숨은 고수'][randomInt(4)];
+ else if(g.phase==='explain'&&g.quiz){if(!g.quiz.canExplain)return;value='그때는 주파수가 잠깐 흔들렸습니다. 지금은 정상 수신 중입니다!';}
+ else if(g.phase==='jury'&&g.quiz){if(g.quiz.isDefendant)return;value=randomInt(1,6);}
+ else if(g.phase==='answer'){const c=g.spyAnswer;value=c?.type==='player'?g.ids[randomInt(g.ids.length)]:c?.type==='number'?randomInt((c.min??0),Math.min(c.max??100,100)+1):c?.options?c.options[randomInt(c.options.length)]:['먼저 솔직하게 이야기한다','상황을 듣고 판단한다','친구에게 직접 확인한다'][randomInt(3)];}
  else if(g.phase==='vote'){const ids=g.ids.filter(id=>id!==bot.id||(g.mode==='court'&&r.selfVote));value=ids[randomInt(ids.length)];}
- else if(g.phase==='predict')value=randomInt(g.ids.length+1);
+ else if(g.phase==='predict')value=randomInt(2)===1;
  else if(g.phase==='choose')value=randomInt(1,101);
  else if(g.phase==='draw'){if(g.drawer===bot.id){if(!g.word)return;for(const stroke of fixtureDrawing(g.word))perform(r,bot.id,{type:'stroke',stroke});bot.attempted=key;bot.reactionMs=Math.max(0,Date.now()-g.phaseStartedAt);return;}
  if(g.correct.includes(bot.id))return;const recognized=recognizeDrawing(g.strokes);if(!recognized&&g.strokes.length<11)return;value=recognized&&Math.random()<d.accuracy?recognized:data.words.filter(w=>w!==recognized)[randomInt(data.words.length-(recognized?1:0))];}
@@ -40,7 +40,7 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  case'debug:now':if(!d.enabled)throw Error('개발자 테스트 모드를 켜세요.');for(const b of d.bots)act(r,b);break;
  case'debug:timer':{const ms=Number(a.ms);if(!Number.isInteger(ms)||ms<100||ms>10000)throw Error('100~10000ms로 입력하세요.');if(r.round&&r.round.phase!=='result'){if(r.round.paused)r.round.paused=ms;else r.round.deadline=Date.now()+ms;}break;}
  case'debug:score':{const p=r.players.find(p=>p.id===a.id);if(!p||!Number.isInteger(a.score)||Math.abs(a.score)>99999)throw Error('점수를 확인하세요.');if(r.final)throw Error('시상식 이후에는 초기화하세요.');p.score=a.score;break;}
- case'debug:reset':r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
+ case'debug:reset':r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
  default:throw Error('알 수 없는 개발자 요청');}
  log(r,a.type);return{};
  }

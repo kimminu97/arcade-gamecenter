@@ -1,0 +1,787 @@
+[
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 소개팅 앱 계정을 지우지 않고 구경만 한다면 바람이라고 볼까?",
+    "spyQuestion": "애인이 소개팅 앱 계정을 지우지 않고 프로필만 고친다면 바람이라고 볼까?",
+    "id": "spy-001"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 이성 직장 동료와 단둘이 새벽까지 야근 후 술을 마셔도 괜찮아?",
+    "spyQuestion": "애인이 이성 대학 동기와 단둘이 새벽까지 동창회 후 술을 마셔도 괜찮아?",
+    "id": "spy-002"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "연애 사실을 숨기고 여행지에서 처음 만난 사람과 놀았다면 헤어질 이유가 될까?",
+    "spyQuestion": "연애 사실을 숨기고 동호회에서 처음 만난 사람과 놀았다면 헤어질 이유가 될까?",
+    "id": "spy-003"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 전 애인의 반려동물을 돌봐주러 집에 가는 걸 허용할 수 있어?",
+    "spyQuestion": "애인이 전 애인의 아픈 부모님께 병문안을 가는 걸 허용할 수 있어?",
+    "id": "spy-004"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "바람은 안 피웠지만 피우고 싶었다고 솔직히 말하는 애인과 계속 만날 수 있어?",
+    "spyQuestion": "바람은 안 피웠지만 다른 사람을 좋아했다고 솔직히 말하는 애인과 계속 만날 수 있어?",
+    "id": "spy-005"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 내 연애 고민을 나도 아는 이성 친구에게 털어놔도 괜찮아?",
+    "spyQuestion": "애인이 내 연애 고민을 나는 모르는 이성 친구에게 털어놔도 괜찮아?",
+    "id": "spy-006"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "헤어진 다음 날 다른 사람을 만나면 이전부터 마음이 있었다고 의심할까?",
+    "spyQuestion": "헤어진 다음 날 소개팅을 잡으면 이전부터 마음이 있었다고 의심할까?",
+    "id": "spy-007"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인의 휴대폰에 내 이름이 거래처처럼 저장돼 있다면 따져 물을까?",
+    "spyQuestion": "애인의 휴대폰에 내 이름이 본명으로만 저장돼 있다면 따져 물을까?",
+    "id": "spy-008"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 전 애인에게 받은 고가 시계를 매일 차도 괜찮아?",
+    "spyQuestion": "애인이 전 애인과 맞춘 커플 시계를 매일 차도 괜찮아?",
+    "id": "spy-009"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 이성 친구의 집에서 여럿이 밤새 게임하는 걸 허용할 수 있어?",
+    "spyQuestion": "애인이 이성 친구의 집에서 여럿이 밤새 술 마시는 걸 허용할 수 있어?",
+    "id": "spy-010"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 술김에 다른 사람과 손을 잡았다고 먼저 고백하면 한 번은 용서할까?",
+    "spyQuestion": "애인이 술김에 다른 사람을 끌어안았다고 먼저 고백하면 한 번은 용서할까?",
+    "id": "spy-011"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "연애 초기에 다른 썸 상대와 관계를 정리하는 데 일주일을 줘도 될까?",
+    "spyQuestion": "연애 초기에 전 애인과 관계를 정리하는 데 일주일을 줘도 될까?",
+    "id": "spy-012"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 나 몰래 내 친구에게 내 결혼 생각을 물어보면 기분이 나쁠까?",
+    "spyQuestion": "애인이 나 몰래 내 친구에게 내 과거 연애를 물어보면 기분이 나쁠까?",
+    "id": "spy-013"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "연락 두절된 애인을 걱정해서 위치 공유 기록을 확인해도 될까?",
+    "spyQuestion": "연락 두절된 애인을 의심해서 위치 공유 기록을 확인해도 될까?",
+    "id": "spy-014"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "yes_no",
+    "normalQuestion": "애인이 다른 사람에게 설렌다는 이유로 한 달간 떨어져 지내자면 기다릴까?",
+    "spyQuestion": "애인이 나에게 설레지 않는다는 이유로 한 달간 떨어져 지내자면 기다릴까?",
+    "id": "spy-015"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "number",
+    "normalQuestion": "애인이 이성 친구와 단둘이 여행을 간다면 최대 며칠까지 괜찮아? (0일은 불가)",
+    "spyQuestion": "애인이 전 애인도 포함된 친구들과 여행을 간다면 최대 며칠까지 괜찮아? (0일은 불가)",
+    "unit": "일",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-016"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "number",
+    "normalQuestion": "술자리 중 애인에게 연락이 없을 때 몇 시간부터 화가 날까?",
+    "spyQuestion": "여행 중 애인에게 연락이 없을 때 몇 시간부터 화가 날까?",
+    "unit": "시간",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-017"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "number",
+    "normalQuestion": "연애 중 다른 사람에게 설렌 마음을 정리할 시간은 최대 며칠 줘야 할까?",
+    "spyQuestion": "연애 중 전 애인에게 남은 마음을 정리할 시간은 최대 며칠 줘야 할까?",
+    "unit": "일",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-018"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "number",
+    "normalQuestion": "애인이 이성 친구 생일 선물에 쓰는 돈은 최대 몇 만원까지 괜찮아?",
+    "spyQuestion": "애인이 전 애인 결혼 축의금에 쓰는 돈은 최대 몇 만원까지 괜찮아?",
+    "unit": "만원",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-019"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "number",
+    "normalQuestion": "헤어진 뒤 다시 만나자는 연락은 최대 몇 번까지 해야 민폐가 아닐까?",
+    "spyQuestion": "싸운 뒤 대화를 거절하는 애인에게 연락은 최대 몇 번까지 해야 민폐가 아닐까?",
+    "unit": "번",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-020"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "text",
+    "normalQuestion": "애인이 내 앞에서 다른 사람 외모를 칭찬한다면 뭐라고 말할래?",
+    "spyQuestion": "애인이 내 앞에서 전 애인 성격을 칭찬한다면 뭐라고 말할래?",
+    "id": "spy-021"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "text",
+    "normalQuestion": "애인이 나와 찍은 사진만 SNS에서 숨긴 걸 알면 첫마디는?",
+    "spyQuestion": "애인이 나와 사귄다는 댓글만 SNS에서 지운 걸 알면 첫마디는?",
+    "id": "spy-022"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "text",
+    "normalQuestion": "애인의 친구가 애인에게 다른 사람을 소개하려는 걸 보면 어떻게 할래?",
+    "spyQuestion": "애인의 친구가 애인에게 전 애인 소식을 자꾸 전하면 어떻게 할래?",
+    "id": "spy-023"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "balance",
+    "normalQuestion": "한 번의 바람 고백과 일 년간의 작은 거짓말 중 더 못 참는 것은?",
+    "spyQuestion": "한 번의 바람 의심과 일 년간의 작은 거짓말 중 더 못 참는 것은?",
+    "options": [
+      "한 번의 사건",
+      "반복된 거짓말"
+    ],
+    "id": "spy-024"
+  },
+  {
+    "category": "연애·바람",
+    "answerType": "balance",
+    "normalQuestion": "애인에게 이성 친구와의 여행과 전 애인과의 식사 중 하나만 허용한다면?",
+    "spyQuestion": "애인에게 이성 친구와의 술자리와 전 애인과의 식사 중 하나만 허용한다면?",
+    "options": [
+      "이성 친구와의 약속",
+      "전 애인과의 약속"
+    ],
+    "id": "spy-025"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "성적 궁합이 맞지 않아도 대화로 해결하며 결혼할 수 있어?",
+    "spyQuestion": "스킨십 빈도가 맞지 않아도 대화로 해결하며 결혼할 수 있어?",
+    "id": "spy-026"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "연인이 과거 원나잇 경험을 먼저 말하지 않았다면 숨긴 거라고 생각해?",
+    "spyQuestion": "연인이 과거 동거 경험을 먼저 말하지 않았다면 숨긴 거라고 생각해?",
+    "id": "spy-027"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "연인이 성적 취향을 솔직히 말했는데 내 취향과 달라도 계속 만날 수 있어?",
+    "spyQuestion": "연인이 결혼 전 동거관을 솔직히 말했는데 내 생각과 달라도 계속 만날 수 있어?",
+    "id": "spy-028"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "피임 비용을 늘 한 사람만 부담한다면 관계를 다시 생각할 이유가 될까?",
+    "spyQuestion": "숙박 비용을 늘 한 사람만 부담한다면 관계를 다시 생각할 이유가 될까?",
+    "id": "spy-029"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "연인이 친구들에게 우리의 성생활 고민을 익명으로 상담해도 괜찮아?",
+    "spyQuestion": "연인이 인터넷에 우리의 성생활 고민을 익명으로 상담해도 괜찮아?",
+    "id": "spy-030"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "연인의 과거 성적 파트너 수를 물어볼 권리가 있다고 생각해?",
+    "spyQuestion": "연인의 과거 동거 상대 수를 물어볼 권리가 있다고 생각해?",
+    "id": "spy-031"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "서로 동의했다면 성적 관계 없이 연애만 해도 충분할까?",
+    "spyQuestion": "서로 동의했다면 스킨십 없이 연애만 해도 충분할까?",
+    "id": "spy-032"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "yes_no",
+    "normalQuestion": "연인이 성 건강 검사를 같이 받자고 하면 나를 의심한다고 느낄까?",
+    "spyQuestion": "연인이 피임 방법을 다시 정하자고 하면 나를 의심한다고 느낄까?",
+    "id": "spy-033"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "number",
+    "normalQuestion": "성적 궁합이 안 맞는다는 고민을 대화로 풀어볼 기간은 최대 몇 개월일까?",
+    "spyQuestion": "스킨십 속도가 다르다는 고민을 대화로 풀어볼 기간은 최대 몇 개월일까?",
+    "unit": "개월",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-034"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "number",
+    "normalQuestion": "성인 연인 사이 성생활 고민은 사귄 지 며칠부터 이야기해도 자연스러울까?",
+    "spyQuestion": "성인 연인 사이 동거 제안은 사귄 지 며칠부터 이야기해도 자연스러울까?",
+    "unit": "일",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-035"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "text",
+    "normalQuestion": "연인이 전 애인과의 성적 궁합을 비교하면 뭐라고 답할래?",
+    "spyQuestion": "연인이 전 애인과의 스킨십 방식을 비교하면 뭐라고 답할래?",
+    "id": "spy-036"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "text",
+    "normalQuestion": "연인이 원나잇으로 시작한 관계를 부모님께 어떻게 소개하자고 하면 답은?",
+    "spyQuestion": "연인이 소개팅 앱으로 시작한 관계를 부모님께 어떻게 소개하자고 하면 답은?",
+    "id": "spy-037"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "text",
+    "normalQuestion": "연인이 요즘 스킨십이 부담스럽다고 한다면 가장 먼저 뭐라고 말할래?",
+    "spyQuestion": "연인이 요즘 동거가 부담스럽다고 한다면 가장 먼저 뭐라고 말할래?",
+    "id": "spy-038"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "balance",
+    "normalQuestion": "성격은 완벽하지만 성적 궁합이 안 맞는 연애에서 우선할 것은?",
+    "spyQuestion": "외모는 이상형이지만 성적 궁합이 안 맞는 연애에서 우선할 것은?",
+    "options": [
+      "이미 잘 맞는 부분",
+      "성적 궁합"
+    ],
+    "id": "spy-039"
+  },
+  {
+    "category": "성인 연애관",
+    "answerType": "balance",
+    "normalQuestion": "성인 연인의 과거 원나잇 이야기는 먼저 듣기와 묻지 않기 중 어느 쪽?",
+    "spyQuestion": "성인 연인의 과거 동거 이야기는 먼저 듣기와 묻지 않기 중 어느 쪽?",
+    "options": [
+      "먼저 듣기",
+      "묻지 않기"
+    ],
+    "id": "spy-040"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 전 애인과 사귀기 전에 허락을 구하면 허락할 수 있어?",
+    "spyQuestion": "친구가 내가 고백했다 차인 사람과 사귀기 전에 허락을 구하면 허락할 수 있어?",
+    "id": "spy-041"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구의 바람을 알게 되면 친구 애인이 직접 묻기 전에도 말할까?",
+    "spyQuestion": "친구의 양다리를 알게 되면 친구 애인이 직접 묻기 전에도 말할까?",
+    "id": "spy-042"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 취업 기회를 자기 애인에게 먼저 알려줬다면 배신일까?",
+    "spyQuestion": "친구가 내 소개팅 기회를 자기 동생에게 먼저 알려줬다면 배신일까?",
+    "id": "spy-043"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 비밀을 자기 애인에게만 말했다면 비밀을 지킨 걸까?",
+    "spyQuestion": "친구가 내 비밀을 자기 가족에게만 말했다면 비밀을 지킨 걸까?",
+    "id": "spy-044"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 돈을 빌리고 해외여행을 예약했다면 바로 갚으라고 할까?",
+    "spyQuestion": "친구가 내 돈을 빌리고 명품을 샀다면 바로 갚으라고 할까?",
+    "id": "spy-045"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구들 여행에서 애인 연락 때문에 혼자 일찍 돌아가도 이해할까?",
+    "spyQuestion": "친구들 여행에서 회사 호출 때문에 혼자 일찍 돌아가도 이해할까?",
+    "id": "spy-046"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 공개된 자리에서 내 허풍을 바로잡으면 고마울까?",
+    "spyQuestion": "친구가 소개팅 자리에서 내 허풍을 바로잡으면 고마울까?",
+    "id": "spy-047"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 나 없는 단톡방에서 내 연애를 걱정하며 욕했다면 용서할까?",
+    "spyQuestion": "친구가 나 없는 단톡방에서 내 소비를 걱정하며 욕했다면 용서할까?",
+    "id": "spy-048"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 결혼식에 안 오고 축의금만 보내면 서운하다고 말할까?",
+    "spyQuestion": "친구가 장례식에 안 오고 부의금만 보내면 서운하다고 말할까?",
+    "id": "spy-049"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 사업 아이디어로 먼저 창업했다면 손절할 이유가 될까?",
+    "spyQuestion": "친구가 내 유튜브 아이디어로 먼저 영상을 냈다면 손절할 이유가 될까?",
+    "id": "spy-050"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구의 잘못을 편들어 달라는 부탁을 거절하면 의리가 없는 걸까?",
+    "spyQuestion": "친구의 거짓말을 맞춰 달라는 부탁을 거절하면 의리가 없는 걸까?",
+    "id": "spy-051"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "yes_no",
+    "normalQuestion": "친구가 내 뒷담화를 들었는데 전달하지 않았다면 좋은 친구일까?",
+    "spyQuestion": "친구가 내 전 애인 소문을 들었는데 전달하지 않았다면 좋은 친구일까?",
+    "id": "spy-052"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "number",
+    "normalQuestion": "친구가 약속을 당일 취소하는 걸 일 년에 몇 번까지 이해할 수 있어?",
+    "spyQuestion": "친구가 애인 때문에 약속을 당일 취소하는 걸 일 년에 몇 번까지 이해할 수 있어?",
+    "unit": "번",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-053"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "number",
+    "normalQuestion": "친구에게 차용증 없이 빌려줄 수 있는 최대 금액은 몇 만원?",
+    "spyQuestion": "친구에게 이유를 묻지 않고 빌려줄 수 있는 최대 금액은 몇 만원?",
+    "unit": "만원",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-054"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "number",
+    "normalQuestion": "친구가 실수로 깨뜨린 내 물건값의 몇 퍼센트를 받는 게 맞을까?",
+    "spyQuestion": "친구가 빌려 갔다 잃어버린 내 물건값의 몇 퍼센트를 받는 게 맞을까?",
+    "unit": "%",
+    "min": 0,
+    "max": 100,
+    "id": "spy-055"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "text",
+    "normalQuestion": "친구가 내 애인을 별로라고 대놓고 말한다면 첫마디는?",
+    "spyQuestion": "친구가 내 결혼 상대를 별로라고 대놓고 말한다면 첫마디는?",
+    "id": "spy-056"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "text",
+    "normalQuestion": "친구가 단톡방에서 나만 빼고 여행 간 이유를 둘러대면 어떻게 할래?",
+    "spyQuestion": "친구가 단톡방에서 나만 빼고 생일 모임 한 이유를 둘러대면 어떻게 할래?",
+    "id": "spy-057"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "text",
+    "normalQuestion": "친구가 내 실수를 자기 실수인 것처럼 대신 뒤집어썼다면 어떻게 보답할래?",
+    "spyQuestion": "친구가 내 빚을 자기 돈으로 몰래 갚아줬다면 어떻게 보답할래?",
+    "id": "spy-058"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "balance",
+    "normalQuestion": "친구의 연애 비밀 때문에 내 애인에게 거짓말해야 한다면 우선할 것은?",
+    "spyQuestion": "친구의 돈 문제 때문에 내 애인에게 거짓말해야 한다면 우선할 것은?",
+    "options": [
+      "친구 비밀 지키기",
+      "내 애인에게 솔직하기"
+    ],
+    "id": "spy-059"
+  },
+  {
+    "category": "친구·배신",
+    "answerType": "balance",
+    "normalQuestion": "친구가 내 이름을 빌려 연애 알리바이를 만들면 먼저 할 일은?",
+    "spyQuestion": "친구가 내 이름을 빌려 회사 결근 알리바이를 만들면 먼저 할 일은?",
+    "options": [
+      "친구에게 먼저 경고",
+      "상대에게 바로 정정"
+    ],
+    "id": "spy-060"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 애인에게 혼난 뒤 단톡방에서는 자기가 이겼다고 할 사람은?",
+    "spyQuestion": "여기서 상사에게 혼난 뒤 단톡방에서는 자기가 이겼다고 할 사람은?",
+    "id": "spy-061"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 헤어진 밤에 전 애인에게 보낼 문자를 대신 써 달라고 할 사람은?",
+    "spyQuestion": "여기서 싸운 밤에 애인에게 보낼 사과문을 대신 써 달라고 할 사람은?",
+    "id": "spy-062"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 돈 없다며 빠졌다가 데이트 사진에 걸릴 사람은?",
+    "spyQuestion": "여기서 바쁘다며 빠졌다가 게임 접속 기록에 걸릴 사람은?",
+    "id": "spy-063"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 술자리 비밀을 다음 날 기억 안 난다는 핑계로 퍼뜨릴 사람은?",
+    "spyQuestion": "여기서 술자리 실수를 다음 날 기억 안 난다는 핑계로 넘길 사람은?",
+    "id": "spy-064"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 축의금 액수를 친구별로 엑셀에 적어둘 사람은?",
+    "spyQuestion": "여기서 더치페이 미납액을 친구별로 엑셀에 적어둘 사람은?",
+    "id": "spy-065"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 애인 앞에서만 친구들에게 갑자기 존댓말을 쓸 사람은?",
+    "spyQuestion": "여기서 부모님 앞에서만 친구들에게 갑자기 점잖아질 사람은?",
+    "id": "spy-066"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 소개팅 후 상대가 별로였다며 사실은 차인 걸 숨길 사람은?",
+    "spyQuestion": "여기서 면접 후 회사가 별로였다며 사실은 떨어진 걸 숨길 사람은?",
+    "id": "spy-067"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 친구의 비싼 차를 자기 차처럼 사진 찍어 올릴 사람은?",
+    "spyQuestion": "여기서 친구의 비싼 숙소를 자기가 잡은 것처럼 사진 올릴 사람은?",
+    "id": "spy-068"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 전 애인 결혼식에 멀쩡한 척 갔다가 취할 사람은?",
+    "spyQuestion": "여기서 짝사랑 상대 결혼식에 멀쩡한 척 갔다가 취할 사람은?",
+    "id": "spy-069"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 친구 애인에게 몰래 연애 상담을 받다 오해 살 사람은?",
+    "spyQuestion": "여기서 친구 전 애인에게 몰래 안부 연락하다 오해 살 사람은?",
+    "id": "spy-070"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 단톡방 실수로 애인에게 보낼 애교를 보낼 사람은?",
+    "spyQuestion": "여기서 단톡방 실수로 직장 상사에게 할 아부를 보낼 사람은?",
+    "id": "spy-071"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 결혼 후에도 친구 모임을 비밀 회식이라고 할 사람은?",
+    "spyQuestion": "여기서 결혼 후에도 게임 시간을 비밀 야근이라고 할 사람은?",
+    "id": "spy-072"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 친구가 성공하면 내가 키웠다고 가장 먼저 말할 사람은?",
+    "spyQuestion": "여기서 친구가 연애하면 내가 연결했다고 가장 먼저 말할 사람은?",
+    "id": "spy-073"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 취하면 평소 숨기던 연봉을 먼저 공개할 사람은?",
+    "spyQuestion": "여기서 취하면 평소 숨기던 연애사를 먼저 공개할 사람은?",
+    "id": "spy-074"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 여행 경비를 아끼자고 해 놓고 자기 기념품에 몰빵할 사람은?",
+    "spyQuestion": "여기서 술값을 아끼자고 해 놓고 자기 안주에 몰빵할 사람은?",
+    "id": "spy-075"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 내 편 들어준다며 싸움에 끼어들었다가 사과하게 만들 사람은?",
+    "spyQuestion": "여기서 내 연애 돕는다며 끼어들었다가 사과하게 만들 사람은?",
+    "id": "spy-076"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 애인의 기념일을 친구 생일 핑계로 넘길 사람은?",
+    "spyQuestion": "여기서 친구 생일을 애인 기념일 핑계로 넘길 사람은?",
+    "id": "spy-077"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 익명 투표 결과를 보고 범인을 끝까지 추궁할 사람은?",
+    "spyQuestion": "여기서 익명 칭찬을 받고 작성자를 끝까지 추궁할 사람은?",
+    "id": "spy-078"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 평소 바람은 절대 안 된다면서 연예인 앞에서는 말 바꿀 사람은?",
+    "spyQuestion": "여기서 평소 외모 안 본다면서 연예인 앞에서는 말 바꿀 사람은?",
+    "id": "spy-079"
+  },
+  {
+    "category": "우리끼리 폭로",
+    "answerType": "player",
+    "normalQuestion": "여기서 오늘 폭로된 흑역사를 십 년 뒤에도 써먹을 사람은?",
+    "spyQuestion": "여기서 오늘 빌려준 돈을 십 년 뒤에도 언급할 사람은?",
+    "id": "spy-080"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "yes_no",
+    "normalQuestion": "결혼 전 모은 돈을 결혼 후에도 각자 관리하자면 동의할까?",
+    "spyQuestion": "결혼 후 받은 상속을 결혼 후에도 각자 관리하자면 동의할까?",
+    "id": "spy-081"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "yes_no",
+    "normalQuestion": "결혼 상대가 부모님께 매달 생활비를 보내는 걸 숨겼다면 결혼을 미룰까?",
+    "spyQuestion": "결혼 상대가 형제에게 매달 생활비를 보내는 걸 숨겼다면 결혼을 미룰까?",
+    "id": "spy-082"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "yes_no",
+    "normalQuestion": "맞벌이인데 한 사람이 집안일을 전담하면 생활비를 덜 내도 될까?",
+    "spyQuestion": "맞벌이인데 한 사람이 육아를 전담하면 생활비를 덜 내도 될까?",
+    "id": "spy-083"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "number",
+    "normalQuestion": "결혼 상대의 학자금 빚은 최대 몇 만원까지 함께 갚을 수 있어?",
+    "spyQuestion": "결혼 상대의 사업 실패 빚은 최대 몇 만원까지 함께 갚을 수 있어?",
+    "unit": "만원",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-084"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "number",
+    "normalQuestion": "배우자가 상의 없이 쓸 수 있는 일회성 지출은 최대 몇 만원?",
+    "spyQuestion": "배우자가 상의 없이 친구에게 빌려줄 수 있는 돈은 최대 몇 만원?",
+    "unit": "만원",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-085"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "number",
+    "normalQuestion": "연봉이 내 두 배인 애인과 데이트하면 내가 비용의 몇 퍼센트를 내야 할까?",
+    "spyQuestion": "자산이 내 두 배인 애인과 데이트하면 내가 비용의 몇 퍼센트를 내야 할까?",
+    "unit": "%",
+    "min": 0,
+    "max": 100,
+    "id": "spy-086"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "text",
+    "normalQuestion": "결혼 상대가 내 연봉을 부모님께 부풀려 말했다면 뭐라고 할래?",
+    "spyQuestion": "결혼 상대가 내 집값을 부모님께 부풀려 말했다면 뭐라고 할래?",
+    "id": "spy-087"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "text",
+    "normalQuestion": "배우자가 친구 보증을 이미 섰다고 통보하면 첫 대응은?",
+    "spyQuestion": "배우자가 가족 보증을 이미 섰다고 통보하면 첫 대응은?",
+    "id": "spy-088"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "balance",
+    "normalQuestion": "배우자가 고수입 해외 발령을 받았을 때 돈과 함께 사는 시간 중 우선할 것은?",
+    "spyQuestion": "배우자가 고수입 주말 근무를 제안받았을 때 돈과 함께 사는 시간 중 우선할 것은?",
+    "options": [
+      "돈",
+      "함께 사는 시간"
+    ],
+    "id": "spy-089"
+  },
+  {
+    "category": "돈·결혼",
+    "answerType": "balance",
+    "normalQuestion": "결혼 비용이 부족하면 부모 지원 받기와 결혼식 축소 중 어느 쪽?",
+    "spyQuestion": "신혼집 비용이 부족하면 부모 지원 받기와 주거 규모 축소 중 어느 쪽?",
+    "options": [
+      "부모 지원",
+      "규모 축소"
+    ],
+    "id": "spy-090"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "yes_no",
+    "normalQuestion": "친구를 살리려면 친구가 평생 나를 배신자로 오해해도 감수할 수 있어?",
+    "spyQuestion": "애인을 살리려면 애인이 평생 나를 배신자로 오해해도 감수할 수 있어?",
+    "id": "spy-091"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "yes_no",
+    "normalQuestion": "모두가 행복해질 거짓말이라면 내가 평생 비난받아도 할 수 있어?",
+    "spyQuestion": "가장 친한 친구가 행복해질 거짓말이라면 내가 평생 비난받아도 할 수 있어?",
+    "id": "spy-092"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "number",
+    "normalQuestion": "내 단톡방 일 년 치를 직장 동료에게 공개한다면 최소 몇 억원을 받아야 할까?",
+    "spyQuestion": "내 단톡방 일 년 치를 양가 부모님께 공개한다면 최소 몇 억원을 받아야 할까?",
+    "unit": "억원",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-093"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "number",
+    "normalQuestion": "친구의 큰 비밀을 잊는 대신 함께한 추억도 몇 년까지 포기할 수 있어?",
+    "spyQuestion": "내 큰 흑역사를 지우는 대신 함께한 추억도 몇 년까지 포기할 수 있어?",
+    "unit": "년",
+    "min": 0,
+    "max": 1000000,
+    "id": "spy-094"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "text",
+    "normalQuestion": "익명 제보로 친구의 부정 합격을 알게 됐다면 가장 먼저 할 행동은?",
+    "spyQuestion": "익명 제보로 친구의 부정 승진을 알게 됐다면 가장 먼저 할 행동은?",
+    "id": "spy-095"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "text",
+    "normalQuestion": "오늘 한 거짓말이 내일 모두 공개된다면 지금 누구에게 뭐라고 할래?",
+    "spyQuestion": "오늘 숨긴 비밀이 내일 모두 공개된다면 지금 누구에게 뭐라고 할래?",
+    "id": "spy-096"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "text",
+    "normalQuestion": "친구가 내 기억에서만 사라지는 선택을 부탁한다면 어떤 조건을 붙일래?",
+    "spyQuestion": "친구가 내 인생에서 완전히 떠나는 선택을 부탁한다면 어떤 조건을 붙일래?",
+    "id": "spy-097"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "text",
+    "normalQuestion": "평생 단 한 번 과거를 고치되 친구 한 명도 그 사실을 안다면 무엇을 고칠래?",
+    "spyQuestion": "평생 단 한 번 과거를 고치되 애인도 그 사실을 안다면 무엇을 고칠래?",
+    "id": "spy-098"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "balance",
+    "normalQuestion": "친구의 범법 사실을 알고 있다면 평생 침묵과 관계를 잃는 신고 중 선택은?",
+    "spyQuestion": "가족의 범법 사실을 알고 있다면 평생 침묵과 관계를 잃는 신고 중 선택은?",
+    "options": [
+      "침묵",
+      "신고"
+    ],
+    "id": "spy-099"
+  },
+  {
+    "category": "선택·딜레마",
+    "answerType": "balance",
+    "normalQuestion": "내 모든 연애 기억을 잃기와 친구들에게 그 기억을 전부 공개하기 중 선택은?",
+    "spyQuestion": "내 모든 술자리 기억을 잃기와 친구들에게 그 기억을 전부 공개하기 중 선택은?",
+    "options": [
+      "기억 잃기",
+      "전부 공개"
+    ],
+    "id": "spy-100"
+  }
+]

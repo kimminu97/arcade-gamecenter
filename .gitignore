@@ -1,52 +1,48 @@
-
-# Node.js
+# Dependencies and generated output
 node_modules/
 dist/
 build/
 coverage/
-*.log
+test-results/
+playwright-report/
+package/
+npm.tgz
+npm-meta.json
 
-# Environment
+# Environment and local credentials
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 
-# SQLite
-*.db
-*.db-journal
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite3
-
-# KakaoTalk actual data
+# Private chat originals, databases and analysis results
+.chat-data/
+.chat-test-data/
 data/
 uploads/
 imports/
 *.txt
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
 
-# IDE
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/
+
+# Editor and OS
 .vscode/
 .idea/
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Chat analysis test data
-.chat-test-data/
-
-# SQLite databases and temporary files
-*.db
-*.db-wal
-*.db-shm
-*.db-journal
-*.sqlite
-*.sqlite3
-
-# Actual KakaoTalk data
-data/
-uploads/
-.env
-.env.*
-!.env.example
+# Local question bank exports can contain private conversations
+*chat-bank*.json
+sample-50.json

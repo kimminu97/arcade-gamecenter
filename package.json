@@ -12,7 +12,8 @@
     "test:e2e": "node scripts/launch.mjs e2e",
     "test:all": "node scripts/launch.mjs all",
     "test:chat-perf": "node scripts/launch.mjs chatperf",
-    "test:chat-real": "node scripts/launch.mjs chatvalidate"
+    "test:chat-real": "node scripts/launch.mjs chatvalidate",
+    "test:yang-bank": "node scripts/launch.mjs yangvalidate"
   },
   "dependencies": {
     "express": "5.3.0",

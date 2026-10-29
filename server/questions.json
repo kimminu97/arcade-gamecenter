@@ -1,55 +1,916 @@
 {
-"court":[
-{"id":"court-001","category":"mild","text":"가장 먼저 아침 산책을 나갈 사람"},
-{"id":"court-002","category":"mild","text":"무인도에서 가장 오래 살아남을 사람"},
-{"id":"court-003","category":"mild","text":"10년 뒤 가장 멋진 취미를 가질 사람"},
-{"id":"court-004","category":"mild","text":"여행 사진을 가장 잘 찍을 사람"},
-{"id":"court-005","category":"mild","text":"깜짝 선물을 잘 준비할 사람"},
-{"id":"court-006","category":"mild","text":"동물과 가장 빨리 친해질 사람"},
-{"id":"court-007","category":"mild","text":"맛집 지도를 만들 것 같은 사람"},
-{"id":"court-008","category":"mild","text":"친구의 생일을 잘 기억할 사람"},
-{"id":"court-009","category":"mild","text":"길을 잃어도 침착할 사람"},
-{"id":"court-010","category":"mild","text":"캠핑 장비를 가장 많이 챙길 사람"},
-{"id":"court-011","category":"mild","text":"보드게임 설명을 잘할 사람"},
-{"id":"court-012","category":"mild","text":"가장 편안한 카페를 찾을 사람"},
-{"id":"court-013","category":"mild","text":"갑자기 외국어를 배우기 시작할 사람"},
-{"id":"court-014","category":"mild","text":"작은 정원을 예쁘게 가꿀 사람"},
-{"id":"court-015","category":"mild","text":"영화 추천을 가장 잘할 사람"},
-{"id":"court-016","category":"mild","text":"아이들과 가장 잘 놀아 줄 사람"},
-{"id":"court-017","category":"mild","text":"모임의 총무를 잘할 사람"},
-{"id":"court-018","category":"mild","text":"요리 대회에 나갈 만한 사람"},
-{"id":"court-019","category":"mild","text":"편지를 정성껏 쓸 사람"},
-{"id":"court-020","category":"mild","text":"친구가 힘들 때 먼저 알아챌 사람"},
-{"id":"court-021","category":"mild","text":"별자리 이름을 많이 알 것 같은 사람"},
-{"id":"court-022","category":"mild","text":"가장 멋진 플레이리스트를 만들 사람"},
-{"id":"court-023","category":"mild","text":"새로운 스포츠를 빨리 배울 사람"},
-{"id":"court-024","category":"mild","text":"여행 짐을 가장 깔끔하게 쌀 사람"},
-{"id":"court-025","category":"mild","text":"우리 모임의 다큐멘터리를 찍을 사람"},
-{"id":"court-026","category":"fun","text":"로또에 당첨되면 바로 세계여행을 갈 사람"},
-{"id":"court-027","category":"fun","text":"여행 계획을 가장 대충 세울 사람"},
-{"id":"court-028","category":"fun","text":"좀비가 나타나면 협상을 시도할 사람"},
-{"id":"court-029","category":"fun","text":"노래방에서 앙코르를 외칠 사람"},
-{"id":"court-030","category":"fun","text":"바비큐 고기 앞에서 가장 진지해질 사람"},
-{"id":"court-031","category":"fun","text":"휴대폰을 손에 들고 찾을 사람"},
-{"id":"court-032","category":"fun","text":"알람을 열 개 맞출 사람"},
-{"id":"court-033","category":"fun","text":"펜션에 슬리퍼를 두고 올 사람"},
-{"id":"court-034","category":"fun","text":"외계인을 만나면 셀카부터 찍을 사람"},
-{"id":"court-035","category":"fun","text":"과자 봉지를 조용히 못 뜯을 사람"},
-{"id":"court-036","category":"fun","text":"택배 상자로 성을 만들 사람"},
-{"id":"court-037","category":"fun","text":"게임에서 지면 연습 모드에 들어갈 사람"},
-{"id":"court-038","category":"fun","text":"엘리베이터에서 춤추다 문이 열릴 사람"},
-{"id":"court-039","category":"fun","text":"10년 뒤 가장 부자가 될 사람"},
-{"id":"court-040","category":"fun","text":"마트에서 시식으로 한 끼를 채울 사람"},
-{"id":"court-041","category":"fun","text":"비밀 작전의 이름을 먼저 정할 사람"},
-{"id":"court-042","category":"fun","text":"길고양이에게 인생 상담을 할 사람"},
-{"id":"court-043","category":"fun","text":"가위바위보 전략을 연구할 사람"},
-{"id":"court-044","category":"fun","text":"모기 한 마리와 밤새 대결할 사람"},
-{"id":"court-045","category":"fun","text":"일주일 동안 같은 노래만 들을 사람"},
-{"id":"court-046","category":"fun","text":"사진 한 장 찍는데 포즈를 열 번 바꿀 사람"},
-{"id":"court-047","category":"fun","text":"눈사람에게 이름표를 붙일 사람"},
-{"id":"court-048","category":"fun","text":"라면 물 양을 정확히 계량할 사람"},
-{"id":"court-049","category":"fun","text":"펜션에서 가장 늦게까지 수다 떨 사람"},
-{"id":"court-050","category":"fun","text":"오늘 게임 결과를 1년 뒤에도 이야기할 사람"}
-],
-"words":["고양이","강아지","코끼리","기린","펭귄","토끼","거북이","문어","고래","상어","사과","바나나","수박","딸기","파인애플","라면","피자","햄버거","김밥","아이스크림","자전거","자동차","비행기","기차","배","우산","안경","시계","가방","신발","냉장고","세탁기","텔레비전","선풍기","컴퓨터","해바라기","나무","산","바다","무지개","눈사람","별","달","태양","구름","축구","농구","수영","캠핑","낚시","로봇","공룡","왕관","풍선","케이크","피아노","기타","칫솔","텐트","등대"]
+  "court": [
+    {
+      "id": "court-001",
+      "category": "mild",
+      "text": "가장 먼저 아침 산책을 나갈 사람"
+    },
+    {
+      "id": "court-002",
+      "category": "mild",
+      "text": "무인도에서 가장 오래 살아남을 사람"
+    },
+    {
+      "id": "court-003",
+      "category": "mild",
+      "text": "10년 뒤 가장 멋진 취미를 가질 사람"
+    },
+    {
+      "id": "court-004",
+      "category": "mild",
+      "text": "여행 사진을 가장 잘 찍을 사람"
+    },
+    {
+      "id": "court-005",
+      "category": "mild",
+      "text": "깜짝 선물을 잘 준비할 사람"
+    },
+    {
+      "id": "court-006",
+      "category": "mild",
+      "text": "동물과 가장 빨리 친해질 사람"
+    },
+    {
+      "id": "court-007",
+      "category": "mild",
+      "text": "맛집 지도를 만들 것 같은 사람"
+    },
+    {
+      "id": "court-008",
+      "category": "mild",
+      "text": "친구의 생일을 잘 기억할 사람"
+    },
+    {
+      "id": "court-009",
+      "category": "mild",
+      "text": "길을 잃어도 침착할 사람"
+    },
+    {
+      "id": "court-010",
+      "category": "mild",
+      "text": "캠핑 장비를 가장 많이 챙길 사람"
+    },
+    {
+      "id": "court-011",
+      "category": "mild",
+      "text": "보드게임 설명을 잘할 사람"
+    },
+    {
+      "id": "court-012",
+      "category": "mild",
+      "text": "가장 편안한 카페를 찾을 사람"
+    },
+    {
+      "id": "court-013",
+      "category": "mild",
+      "text": "갑자기 외국어를 배우기 시작할 사람"
+    },
+    {
+      "id": "court-014",
+      "category": "mild",
+      "text": "작은 정원을 예쁘게 가꿀 사람"
+    },
+    {
+      "id": "court-015",
+      "category": "mild",
+      "text": "영화 추천을 가장 잘할 사람"
+    },
+    {
+      "id": "court-016",
+      "category": "mild",
+      "text": "아이들과 가장 잘 놀아 줄 사람"
+    },
+    {
+      "id": "court-017",
+      "category": "mild",
+      "text": "모임의 총무를 잘할 사람"
+    },
+    {
+      "id": "court-018",
+      "category": "mild",
+      "text": "요리 대회에 나갈 만한 사람"
+    },
+    {
+      "id": "court-019",
+      "category": "mild",
+      "text": "편지를 정성껏 쓸 사람"
+    },
+    {
+      "id": "court-020",
+      "category": "mild",
+      "text": "친구가 힘들 때 먼저 알아챌 사람"
+    },
+    {
+      "id": "court-021",
+      "category": "mild",
+      "text": "별자리 이름을 많이 알 것 같은 사람"
+    },
+    {
+      "id": "court-022",
+      "category": "mild",
+      "text": "가장 멋진 플레이리스트를 만들 사람"
+    },
+    {
+      "id": "court-023",
+      "category": "mild",
+      "text": "새로운 스포츠를 빨리 배울 사람"
+    },
+    {
+      "id": "court-024",
+      "category": "mild",
+      "text": "여행 짐을 가장 깔끔하게 쌀 사람"
+    },
+    {
+      "id": "court-025",
+      "category": "mild",
+      "text": "우리 모임의 다큐멘터리를 찍을 사람"
+    },
+    {
+      "id": "court-026",
+      "category": "fun",
+      "text": "로또에 당첨되면 바로 세계여행을 갈 사람"
+    },
+    {
+      "id": "court-027",
+      "category": "fun",
+      "text": "여행 계획을 가장 대충 세울 사람"
+    },
+    {
+      "id": "court-028",
+      "category": "fun",
+      "text": "좀비가 나타나면 협상을 시도할 사람"
+    },
+    {
+      "id": "court-029",
+      "category": "fun",
+      "text": "노래방에서 앙코르를 외칠 사람"
+    },
+    {
+      "id": "court-030",
+      "category": "fun",
+      "text": "바비큐 고기 앞에서 가장 진지해질 사람"
+    },
+    {
+      "id": "court-031",
+      "category": "fun",
+      "text": "휴대폰을 손에 들고 찾을 사람"
+    },
+    {
+      "id": "court-032",
+      "category": "fun",
+      "text": "알람을 열 개 맞출 사람"
+    },
+    {
+      "id": "court-033",
+      "category": "fun",
+      "text": "펜션에 슬리퍼를 두고 올 사람"
+    },
+    {
+      "id": "court-034",
+      "category": "fun",
+      "text": "외계인을 만나면 셀카부터 찍을 사람"
+    },
+    {
+      "id": "court-035",
+      "category": "fun",
+      "text": "과자 봉지를 조용히 못 뜯을 사람"
+    },
+    {
+      "id": "court-036",
+      "category": "fun",
+      "text": "택배 상자로 성을 만들 사람"
+    },
+    {
+      "id": "court-037",
+      "category": "fun",
+      "text": "게임에서 지면 연습 모드에 들어갈 사람"
+    },
+    {
+      "id": "court-038",
+      "category": "fun",
+      "text": "엘리베이터에서 춤추다 문이 열릴 사람"
+    },
+    {
+      "id": "court-039",
+      "category": "fun",
+      "text": "10년 뒤 가장 부자가 될 사람"
+    },
+    {
+      "id": "court-040",
+      "category": "fun",
+      "text": "마트에서 시식으로 한 끼를 채울 사람"
+    },
+    {
+      "id": "court-041",
+      "category": "fun",
+      "text": "비밀 작전의 이름을 먼저 정할 사람"
+    },
+    {
+      "id": "court-042",
+      "category": "fun",
+      "text": "길고양이에게 인생 상담을 할 사람"
+    },
+    {
+      "id": "court-043",
+      "category": "fun",
+      "text": "가위바위보 전략을 연구할 사람"
+    },
+    {
+      "id": "court-044",
+      "category": "fun",
+      "text": "모기 한 마리와 밤새 대결할 사람"
+    },
+    {
+      "id": "court-045",
+      "category": "fun",
+      "text": "일주일 동안 같은 노래만 들을 사람"
+    },
+    {
+      "id": "court-046",
+      "category": "fun",
+      "text": "사진 한 장 찍는데 포즈를 열 번 바꿀 사람"
+    },
+    {
+      "id": "court-047",
+      "category": "fun",
+      "text": "눈사람에게 이름표를 붙일 사람"
+    },
+    {
+      "id": "court-048",
+      "category": "fun",
+      "text": "라면 물 양을 정확히 계량할 사람"
+    },
+    {
+      "id": "court-049",
+      "category": "fun",
+      "text": "펜션에서 가장 늦게까지 수다 떨 사람"
+    },
+    {
+      "id": "court-050",
+      "category": "fun",
+      "text": "오늘 게임 결과를 1년 뒤에도 이야기할 사람"
+    },
+    {
+      "id": "court-051",
+      "category": "연애·바람",
+      "text": "여기서 애인에게 들켜도 끝까지 바람은 아니었다고 우길 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-052",
+      "category": "연애·바람",
+      "text": "여기서 술김에 전 애인에게 연락한 뒤 다음 날 휴대폰부터 숨길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-053",
+      "category": "연애·바람",
+      "text": "여기서 친구의 전 애인에게 고백받으면 의리보다 설렘이 앞설 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-054",
+      "category": "연애·바람",
+      "text": "여기서 연애 상담은 전문가처럼 하면서 자기 연애는 가장 엉망일 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-055",
+      "category": "연애·바람",
+      "text": "여기서 이별한 뒤 전 애인의 SNS를 부계정으로 확인할 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-056",
+      "category": "연애·바람",
+      "text": "여기서 좋아하는 사람이 생기면 친구와의 선약부터 취소할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-057",
+      "category": "연애·바람",
+      "text": "여기서 연애 중 휴대폰 검사를 먼저 요구하고 정작 자기 폰은 안 보여 줄 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-058",
+      "category": "연애·바람",
+      "text": "여기서 전 애인의 새 연애 소식을 듣고 갑자기 운동을 시작할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-059",
+      "category": "연애·바람",
+      "text": "여기서 애인과 싸운 날 단체방을 자기 편 모집소로 만들 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-060",
+      "category": "연애·바람",
+      "text": "여기서 헤어지자고 말해 놓고 상대가 알겠다고 하면 가장 당황할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-061",
+      "category": "연애·바람",
+      "text": "여기서 썸 세 명을 동시에 관리하다 약속 장소를 헷갈릴 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-062",
+      "category": "연애·바람",
+      "text": "여기서 기념일을 잊고 배송 지연 탓으로 돌릴 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-063",
+      "category": "연애·바람",
+      "text": "여기서 연애 사실을 숨기는 이유가 사생활 보호보다 다음 기회일 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-064",
+      "category": "연애·바람",
+      "text": "여기서 애인의 친구에게 잘 보이려다가 애인보다 더 열심히 연락할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-065",
+      "category": "연애·바람",
+      "text": "여기서 전 애인과의 추억 장소에 새 애인을 데려가고 단골인 척할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-066",
+      "category": "연애·바람",
+      "text": "여기서 연애할 때 쿨한 척하다가 답장 속도를 분 단위로 계산할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-067",
+      "category": "연애·바람",
+      "text": "여기서 애인 몰래 소개팅 앱을 구경만 했다는 변명을 준비할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-068",
+      "category": "연애·바람",
+      "text": "여기서 친구의 이별 위로 자리에 와서 자기 연애 자랑만 할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-069",
+      "category": "연애·바람",
+      "text": "여기서 차인 뒤 사실은 자기가 먼저 마음이 식었다고 발표할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-070",
+      "category": "연애·바람",
+      "text": "여기서 전 애인에게 빌려준 물건을 핑계로 만날 약속을 잡을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-071",
+      "category": "연애·바람",
+      "text": "여기서 애인 앞에서는 연락 안 한다던 이성 친구의 소식을 제일 잘 알 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-072",
+      "category": "연애·바람",
+      "text": "여기서 연애 초반에 상대 취미를 좋아하는 척했다가 장비까지 살 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-073",
+      "category": "연애·바람",
+      "text": "여기서 애인과 헤어진 날 소개팅 가능 여부부터 물어볼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-074",
+      "category": "연애·바람",
+      "text": "여기서 연애가 끝나면 커플 사진보다 함께 쓰던 구독 계정을 더 아쉬워할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-075",
+      "category": "연애·바람",
+      "text": "여기서 친구들 앞에서는 연애의 주도권을 쥐었다고 하고 통화 한 번에 귀가할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-076",
+      "category": "성인 연애관",
+      "text": "여기서 원나잇 경험담에 가장 많은 허세와 각색을 더할 것 같은 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-077",
+      "category": "성인 연애관",
+      "text": "여기서 성인 연애관은 자유롭다면서 자기 애인의 과거에는 가장 엄격할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-078",
+      "category": "성인 연애관",
+      "text": "여기서 소개팅에서 연애 경험을 부풀렸다가 전 연애 기간 계산이 꼬일 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-079",
+      "category": "성인 연애관",
+      "text": "여기서 가벼운 만남이라고 시작했다가 혼자 결혼식장까지 상상할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-080",
+      "category": "성인 연애관",
+      "text": "여기서 데이트 다음 날 친구들에게 후기 발표를 예고했다가 연락이 끊길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-081",
+      "category": "성인 연애관",
+      "text": "여기서 분위기 잡겠다고 고른 음악 때문에 오히려 민망해질 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-082",
+      "category": "성인 연애관",
+      "text": "여기서 연인과의 사적인 일화를 비밀이라며 친구 전원에게 따로 말할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-083",
+      "category": "성인 연애관",
+      "text": "여기서 소개팅 상대 이름을 잘못 불러 놓고 별명을 지어 준 거라고 우길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-084",
+      "category": "성인 연애관",
+      "text": "여기서 처음 만난 사람 앞에서 어른스러운 척하다가 계산대에서 엄마 카드를 꺼낼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-085",
+      "category": "성인 연애관",
+      "text": "여기서 연애 조언 영상을 잔뜩 보고 대본처럼 대화하다가 티 날 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-086",
+      "category": "성인 연애관",
+      "text": "여기서 여행 숙소를 멋지게 예약했다며 자랑하고 날짜를 틀릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-087",
+      "category": "성인 연애관",
+      "text": "여기서 연애 중 서로 사생활을 존중하자고 해 놓고 접속 기록부터 볼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-088",
+      "category": "성인 연애관",
+      "text": "여기서 썸 상대의 작은 친절을 친구들에게 거의 고백으로 번역할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-089",
+      "category": "성인 연애관",
+      "text": "여기서 민망한 데이트 실수의 원인을 끝까지 날씨 탓으로 돌릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-090",
+      "category": "성인 연애관",
+      "text": "여기서 관계를 진지하게 정하자는 말보다 여행비 정산 이야기를 먼저 꺼낼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-091",
+      "category": "친구·배신",
+      "text": "여기서 친구의 비밀을 자기 애인에게 가장 먼저 털어놓을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-092",
+      "category": "친구·배신",
+      "text": "여기서 친구 편이라고 해 놓고 유리한 쪽이 바뀌면 중립을 선언할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-093",
+      "category": "친구·배신",
+      "text": "여기서 친구가 빌려준 물건을 다른 친구에게 다시 빌려줄 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-094",
+      "category": "친구·배신",
+      "text": "여기서 단체 여행 총무를 응원하다 정산 오류가 나면 제일 먼저 추궁할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-095",
+      "category": "친구·배신",
+      "text": "여기서 친구 둘이 싸우면 양쪽 말을 옮기다가 사건을 키울 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-096",
+      "category": "친구·배신",
+      "text": "여기서 친한 친구의 가게에서도 지인 할인을 가장 당당하게 요구할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-097",
+      "category": "친구·배신",
+      "text": "여기서 친구의 면접 비법을 듣고 같은 회사에 몰래 지원할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-098",
+      "category": "친구·배신",
+      "text": "여기서 친구의 좋은 소식을 축하하면서 자기 소식으로 대화를 돌릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-099",
+      "category": "친구·배신",
+      "text": "여기서 친구를 위해 비밀을 지키다가도 공짜 술 한 잔에 입이 열릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-100",
+      "category": "친구·배신",
+      "text": "여기서 의리 여행이라고 해 놓고 더 좋은 숙소를 제안받으면 따로 갈 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-101",
+      "category": "친구·배신",
+      "text": "여기서 친구의 부탁을 알겠다고 해 놓고 단체방에 대신 해 줄 사람을 구할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-102",
+      "category": "친구·배신",
+      "text": "여기서 친구가 곤란한 상황일 때 돕기 전에 영상을 찍을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-103",
+      "category": "친구·배신",
+      "text": "여기서 함께 낸 아이디어가 잘되면 자기가 처음 말한 부분을 확대 해석할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-104",
+      "category": "친구·배신",
+      "text": "여기서 친구가 준 선물을 중고로 팔고 친구에게 구매 문의를 받을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-105",
+      "category": "친구·배신",
+      "text": "여기서 친구에게 서운한 걸 직접 말하지 않고 상태 메시지로 발표할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-106",
+      "category": "친구·배신",
+      "text": "여기서 친구의 새 애인 앞에서 봉인된 흑역사를 가장 먼저 해제할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-107",
+      "category": "친구·배신",
+      "text": "여기서 친구와의 비밀 약속을 까먹고 본인이 배신당했다고 화낼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-108",
+      "category": "친구·배신",
+      "text": "여기서 단체 사진은 자기 얼굴만 확인한 뒤 바로 올릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-109",
+      "category": "친구·배신",
+      "text": "여기서 친구가 산 장비를 따라 사고 원래 자기가 먼저 알아봤다고 할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-110",
+      "category": "친구·배신",
+      "text": "여기서 친구에게 어려운 충고를 부탁받으면 웃긴 얘기로 넘길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-111",
+      "category": "우리끼리 폭로",
+      "text": "여기서 술 마신 다음 날 가장 먼저 단체 사과문을 보낼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-112",
+      "category": "우리끼리 폭로",
+      "text": "여기서 두 잔만 마신다던 선언을 두 시간짜리 연설로 바꿀 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-113",
+      "category": "우리끼리 폭로",
+      "text": "여기서 술에 취하면 실제로는 한 번 만난 유명인을 절친으로 소개할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-114",
+      "category": "우리끼리 폭로",
+      "text": "여기서 술값을 쏘겠다고 일어나서 화장실에 가장 오래 있을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-115",
+      "category": "우리끼리 폭로",
+      "text": "여기서 자기 흑역사를 듣고도 그 정도면 멋있었다고 재평가할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-116",
+      "category": "우리끼리 폭로",
+      "text": "여기서 길을 안다고 자신하다가 결국 편의점 직원에게 물어볼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-117",
+      "category": "우리끼리 폭로",
+      "text": "여기서 금주 선언을 깨고 오늘은 의리 때문에 마신다고 할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-118",
+      "category": "우리끼리 폭로",
+      "text": "여기서 노래방에서 모르는 노래를 끝까지 아는 척하며 부를 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-119",
+      "category": "우리끼리 폭로",
+      "text": "여기서 숙취가 없다고 자랑하다 아침 해장 메뉴를 가장 진지하게 고를 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-120",
+      "category": "우리끼리 폭로",
+      "text": "여기서 게임에서 졌을 때 키보드보다 인터넷 회사를 먼저 탓할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-121",
+      "category": "우리끼리 폭로",
+      "text": "여기서 잠깐 눈만 감는다고 해 놓고 여행 첫날을 통째로 날릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-122",
+      "category": "우리끼리 폭로",
+      "text": "여기서 술자리에서 한 약속을 다음 날 계약서 없었다며 부정할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-123",
+      "category": "우리끼리 폭로",
+      "text": "여기서 사소한 실수를 영화 같은 무용담으로 각색할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-124",
+      "category": "우리끼리 폭로",
+      "text": "여기서 요리를 잘한다고 나섰다가 배달 앱으로 조용히 수습할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-125",
+      "category": "우리끼리 폭로",
+      "text": "여기서 운동 기록 사진을 위해 운동보다 준비 시간을 더 쓸 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-126",
+      "category": "우리끼리 폭로",
+      "text": "여기서 남의 술버릇을 흉내 내다가 자기 술버릇부터 들킬 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-127",
+      "category": "우리끼리 폭로",
+      "text": "여기서 안 취했다고 인증하려고 보낸 메시지가 가장 해독하기 어려울 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-128",
+      "category": "우리끼리 폭로",
+      "text": "여기서 친구의 장난을 끝까지 진짜 정보로 믿고 검색할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-129",
+      "category": "우리끼리 폭로",
+      "text": "여기서 새벽 감성 글을 올리고 아침에 계정 오류라고 변명할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-130",
+      "category": "우리끼리 폭로",
+      "text": "여기서 아는 척하던 외국어로 직원이 말을 걸면 제일 먼저 화장실로 갈 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-131",
+      "category": "돈·결혼",
+      "text": "여기서 소개팅할 때 연봉에 아직 받지 않은 보너스까지 포함할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-132",
+      "category": "돈·결혼",
+      "text": "여기서 친구에게 돈을 빌리고 갚을 날보다 새 물건 배송일을 먼저 기억할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-133",
+      "category": "돈·결혼",
+      "text": "여기서 결혼 후 비상금을 가장 창의적인 항목명으로 숨길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-134",
+      "category": "돈·결혼",
+      "text": "여기서 축의금 액수를 정할 때 우정보다 식대 계산기를 먼저 켤 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-135",
+      "category": "돈·결혼",
+      "text": "여기서 로또에 당첨돼도 친구들에게는 소액만 됐다고 말할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-136",
+      "category": "돈·결혼",
+      "text": "여기서 무료 배송을 맞추려다 필요한 물건 값보다 더 쓸 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-137",
+      "category": "돈·결혼",
+      "text": "여기서 결혼 비용을 줄이자고 하면서 자기 취미 예산은 성역으로 둘 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-138",
+      "category": "돈·결혼",
+      "text": "여기서 돈을 많이 벌면 가장 먼저 단체방에서 재테크 강의를 시작할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-139",
+      "category": "돈·결혼",
+      "text": "여기서 모임 정산 때 천 원 단위는 따지면서 자기 빚은 대충 기억할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-140",
+      "category": "돈·결혼",
+      "text": "여기서 명품을 사고도 친구들에게는 아는 형에게 싸게 받았다고 할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-141",
+      "category": "선택·딜레마",
+      "text": "여기서 1억을 받는 대신 친구의 흑역사를 공개하라면 계약 조건부터 물을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-142",
+      "category": "선택·딜레마",
+      "text": "여기서 무료 해외여행 한 자리 때문에 제일 오래된 약속을 취소할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-143",
+      "category": "선택·딜레마",
+      "text": "여기서 친구를 살릴 마지막 게임 기회에 자기 기록 경신부터 노릴 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-144",
+      "category": "선택·딜레마",
+      "text": "여기서 모두에게 공정한 추첨을 주장하다 자기에게 불리하면 재추첨을 요구할 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-145",
+      "category": "선택·딜레마",
+      "text": "여기서 하루 동안 속마음이 방송된다면 가장 먼저 휴대폰을 끌 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-146",
+      "category": "선택·딜레마",
+      "text": "여기서 외딴섬의 공동 식량을 자기 비상식량이라며 따로 숨길 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-147",
+      "category": "선택·딜레마",
+      "text": "여기서 친구와 상금을 나누기로 했다가 수수료를 새로 만들어 낼 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-148",
+      "category": "선택·딜레마",
+      "text": "여기서 거짓말 탐지기 앞에서도 질문의 정의부터 따질 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-149",
+      "category": "선택·딜레마",
+      "text": "여기서 자기가 낸 벌칙 규칙에 본인이 걸리면 예외 조항을 찾을 사람은?",
+      "source": "2026-10-expansion"
+    },
+    {
+      "id": "court-150",
+      "category": "선택·딜레마",
+      "text": "여기서 모두의 기억을 한 번 지울 수 있다면 자기 실수 대신 빌린 돈을 지울 사람은?",
+      "source": "2026-10-expansion"
+    }
+  ],
+  "words": [
+    "고양이",
+    "강아지",
+    "코끼리",
+    "기린",
+    "펭귄",
+    "토끼",
+    "거북이",
+    "문어",
+    "고래",
+    "상어",
+    "사과",
+    "바나나",
+    "수박",
+    "딸기",
+    "파인애플",
+    "라면",
+    "피자",
+    "햄버거",
+    "김밥",
+    "아이스크림",
+    "자전거",
+    "자동차",
+    "비행기",
+    "기차",
+    "배",
+    "우산",
+    "안경",
+    "시계",
+    "가방",
+    "신발",
+    "냉장고",
+    "세탁기",
+    "텔레비전",
+    "선풍기",
+    "컴퓨터",
+    "해바라기",
+    "나무",
+    "산",
+    "바다",
+    "무지개",
+    "눈사람",
+    "별",
+    "달",
+    "태양",
+    "구름",
+    "축구",
+    "농구",
+    "수영",
+    "캠핑",
+    "낚시",
+    "로봇",
+    "공룡",
+    "왕관",
+    "풍선",
+    "케이크",
+    "피아노",
+    "기타",
+    "칫솔",
+    "텐트",
+    "등대"
+  ]
 }

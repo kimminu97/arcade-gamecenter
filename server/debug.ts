@@ -18,7 +18,8 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  if(g.phase==='quiz'&&g.quiz)value=g.quiz.options[randomInt(g.quiz.options.length)].id;
  else if(g.phase==='explain'&&g.quiz){if(!g.quiz.canExplain)return;value='그때는 주파수가 잠깐 흔들렸습니다. 지금은 정상 수신 중입니다!';}
  else if(g.phase==='jury'&&g.quiz){if(g.quiz.isDefendant)return;value=randomInt(1,6);}
- else if(g.phase==='answer'){const c=g.spyAnswer;value=c?.type==='player'?g.ids[randomInt(g.ids.length)]:c?.type==='number'?randomInt((c.min??0),Math.min(c.max??100,100)+1):c?.options?c.options[randomInt(c.options.length)]:['먼저 솔직하게 이야기한다','상황을 듣고 판단한다','친구에게 직접 확인한다'][randomInt(3)];}
+ else if(g.mode==='spy'&&g.phase==='discuss'){value=['상대의 입장을 먼저 듣고 내 기준을 설명하겠다','내가 같은 일을 당했을 때를 생각해 보고 판단하겠다','의도와 이후의 태도를 보고 결정하겠다'][randomInt(3)];}
+ else if(g.phase==='answer'){value='먼저 서로의 생각을 들어 보겠다';}
  else if(g.phase==='vote'){const ids=g.ids.filter(id=>id!==bot.id||(g.mode==='court'&&r.selfVote));value=ids[randomInt(ids.length)];}
  else if(g.phase==='predict')value=randomInt(2)===1;
  else if(g.phase==='choose')value=randomInt(1,101);
@@ -40,11 +41,11 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  case'debug:now':if(!d.enabled)throw Error('개발자 테스트 모드를 켜세요.');for(const b of d.bots)act(r,b);break;
  case'debug:timer':{const ms=Number(a.ms);if(!Number.isInteger(ms)||ms<100||ms>10000)throw Error('100~10000ms로 입력하세요.');if(r.round&&r.round.phase!=='result'){if(r.round.paused)r.round.paused=ms;else r.round.deadline=Date.now()+ms;}break;}
  case'debug:score':{const p=r.players.find(p=>p.id===a.id);if(!p||!Number.isInteger(a.score)||Math.abs(a.score)>99999)throw Error('점수를 확인하세요.');if(r.final)throw Error('시상식 이후에는 초기화하세요.');p.score=a.score;break;}
- case'debug:reset':r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
+ case'debug:reset':r.yangUsed={};r.yangLastTopic=undefined;r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
  default:throw Error('알 수 없는 개발자 요청');}
  log(r,a.type);return{};
  }
  function tick(r:Room){const d=states.get(r);if(!d?.enabled||!d.auto)return;const g=r.round;if(!g||g.paused||g.phase==='result')return;for(const b of d.bots){const key=`${g.id}:${g.phase}`;if(b.key!==key){b.key=key;b.due=Date.now()+d.delay+randomInt(0,Math.max(1,Math.floor(d.delay*.25)));}if(Date.now()>=b.due){try{act(r,b);}catch(e){log(r,'bot:error',e instanceof Error?e.message:'실패');b.attempted=key;}}}}
- function snapshot(r:Room,grant?:string,botId?:string){const d=state(r);if(!grant||grant!==d.grant)return null;return{enabled:d.enabled,auto:d.auto,delay:d.delay,accuracy:d.accuracy,bots:d.bots.map(b=>({...b})),logs:d.logs,botView:botId&&d.bots.some(b=>b.id===botId)?view(r,botId):null};}
+ function snapshot(r:Room,grant?:string,botId?:string){const d=state(r);if(!grant||grant!==d.grant)return null;return{enabled:d.enabled,auto:d.auto,delay:d.delay,accuracy:d.accuracy,bots:d.bots.map(b=>({...b})),logs:d.logs,botView:r.round?.mode==='yang'?null:botId&&d.bots.some(b=>b.id===botId)?view(r,botId):null};}
  return{command,tick,snapshot,log};
 }

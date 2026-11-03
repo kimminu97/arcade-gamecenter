@@ -13,9 +13,10 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  function requireBot(r:Room,id:string){const bot=state(r).bots.find(b=>b.id===id),p=r.players.find(p=>p.id===id);if(!bot||!p)throw Error('Bot을 찾을 수 없습니다.');return{bot,p};}
  function perform(r:Room,id:string,a:PlayerAction){const before=r.round?.phase,out=playerAction(r,id,a);log(r,`bot:${a.type}`,`${r.players.find(p=>p.id===id)?.name}: ${out.message}`);notify(r,out.event,out.stroke);if(before!==r.round?.phase)log(r,'phase',`${before} → ${r.round?.phase}`);return out.message;}
  function act(r:Room,bot:Bot){const d=state(r),p=r.players.find(p=>p.id===bot.id),snapshot=view(r,bot.id),g=snapshot.round;if(!p?.online||p.excluded||bot.silent||!g||g.paused||g.phase==='result'||!g.ids.includes(bot.id))return;
- const key=`${g.id}:${g.phase}`;if(bot.attempted===key||g.phase!=='draw'&&g.submitted.includes(bot.id))return;
+ const key=`${g.id}:${g.phase}:${g.mafia?.day??''}`;if(bot.attempted===key||g.phase!=='draw'&&g.submitted.includes(bot.id))return;
  let value:unknown;
- if(g.phase==='quiz'&&g.quiz)value=g.quiz.options[randomInt(g.quiz.options.length)].id;
+ if(g.mafia){if(g.mafia.submitted||!g.mafia.targets.length)return;value={roundId:g.id,version:g.mafia.version,revision:g.mafia.revision,targetId:g.mafia.targets[randomInt(g.mafia.targets.length)]};}
+ else if(g.phase==='quiz'&&g.quiz)value=g.quiz.options[randomInt(g.quiz.options.length)].id;
  else if(g.phase==='explain'&&g.quiz){if(!g.quiz.canExplain)return;value='그때는 주파수가 잠깐 흔들렸습니다. 지금은 정상 수신 중입니다!';}
  else if(g.phase==='jury'&&g.quiz){if(g.quiz.isDefendant)return;value=randomInt(1,6);}
  else if(g.mode==='spy'&&g.phase==='discuss'){value=['상대의 입장을 먼저 듣고 내 기준을 설명하겠다','내가 같은 일을 당했을 때를 생각해 보고 판단하겠다','의도와 이후의 태도를 보고 결정하겠다'][randomInt(3)];}
@@ -41,11 +42,11 @@ export function createDebugService(environment:string,notify:(r:Room,event?:stri
  case'debug:now':if(!d.enabled)throw Error('개발자 테스트 모드를 켜세요.');for(const b of d.bots)act(r,b);break;
  case'debug:timer':{const ms=Number(a.ms);if(!Number.isInteger(ms)||ms<100||ms>10000)throw Error('100~10000ms로 입력하세요.');if(r.round&&r.round.phase!=='result'){if(r.round.paused)r.round.paused=ms;else r.round.deadline=Date.now()+ms;}break;}
  case'debug:score':{const p=r.players.find(p=>p.id===a.id);if(!p||!Number.isInteger(a.score)||Math.abs(a.score)>99999)throw Error('점수를 확인하세요.');if(r.final)throw Error('시상식 이후에는 초기화하세요.');p.score=a.score;break;}
- case'debug:reset':r.yangUsed={};r.yangLastTopic=undefined;r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
+ case'debug:reset':r.gameSession=undefined;r.ceremony=undefined;r.yangUsed={};r.yangLastTopic=undefined;r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.round=null;r.final=false;r.roulette=null;r.turn=0;r.drawOrder=[];r.history=[];r.used={};r.players.forEach(p=>{p.score=0;p.excluded=false;if(p.bot)p.online=true;});d.bots.forEach(b=>{b.key='';b.attempted='';b.silent=false;b.reactionMs=null;});break;
  default:throw Error('알 수 없는 개발자 요청');}
  log(r,a.type);return{};
  }
- function tick(r:Room){const d=states.get(r);if(!d?.enabled||!d.auto)return;const g=r.round;if(!g||g.paused||g.phase==='result')return;for(const b of d.bots){const key=`${g.id}:${g.phase}`;if(b.key!==key){b.key=key;b.due=Date.now()+d.delay+randomInt(0,Math.max(1,Math.floor(d.delay*.25)));}if(Date.now()>=b.due){try{act(r,b);}catch(e){log(r,'bot:error',e instanceof Error?e.message:'실패');b.attempted=key;}}}}
- function snapshot(r:Room,grant?:string,botId?:string){const d=state(r);if(!grant||grant!==d.grant)return null;return{enabled:d.enabled,auto:d.auto,delay:d.delay,accuracy:d.accuracy,bots:d.bots.map(b=>({...b})),logs:d.logs,botView:r.round?.mode==='yang'?null:botId&&d.bots.some(b=>b.id===botId)?view(r,botId):null};}
+ function tick(r:Room){const d=states.get(r);if(!d?.enabled||!d.auto)return;const g=r.round;if(!g||g.paused||g.phase==='result')return;for(const b of d.bots){const key=`${g.id}:${g.phase}:${g.mafia?.day??''}`;if(b.key!==key){b.key=key;b.due=Date.now()+d.delay+randomInt(0,Math.max(1,Math.floor(d.delay*.25)));}if(Date.now()>=b.due){try{act(r,b);}catch(e){log(r,'bot:error',e instanceof Error?e.message:'실패');b.attempted=key;}}}}
+ function snapshot(r:Room,grant?:string,botId?:string){const d=state(r);if(!grant||grant!==d.grant)return null;return{enabled:d.enabled,auto:d.auto,delay:d.delay,accuracy:d.accuracy,bots:d.bots.map(b=>({...b})),logs:d.logs,botView:['yang','mafia'].includes(r.round?.mode||'')?null:botId&&d.bots.some(b=>b.id===botId)?view(r,botId):null};}
  return{command,tick,snapshot,log};
 }

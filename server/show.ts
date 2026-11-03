@@ -2,7 +2,7 @@ import {randomInt,randomUUID} from 'node:crypto';
 import type {Room} from './game';
 export type Roulette={id:string;mode:string;endsAt:number};
 export type HiddenEvent={kind:'double'|'mission';title:string;description:string;multiplier:number};
-export function roll(r:Room){if(r.final||r.round&&r.round.phase!=='result')throw Error('라운드가 끝난 뒤 룰렛을 돌려 주세요.');if(r.roulette&&Date.now()<r.roulette.endsAt)throw Error('룰렛이 돌아가고 있습니다.');r.roulette={id:randomUUID(),mode:['spy','court','draw','number'][randomInt(4)],endsAt:Date.now()+3600};return r.roulette;}
+export function roll(r:Room){if(r.ceremony||r.gameSession&&!r.gameSession.endedAt)throw Error('게임 종료 시상식을 먼저 마치세요.');if(r.final||r.round&&r.round.phase!=='result')throw Error('라운드가 끝난 뒤 룰렛을 돌려 주세요.');if(r.roulette&&Date.now()<r.roulette.endsAt)throw Error('룰렛이 돌아가고 있습니다.');r.roulette={id:randomUUID(),mode:['spy','court','draw','number'][randomInt(4)],endsAt:Date.now()+3600};return r.roulette;}
 export function eventFor(turn:number,enabled:boolean):HiddenEvent|null{
  if(!enabled||turn%3)return null;
  if(turn%6)return{kind:'double',title:'더블 찬스 ×2',description:'이번 라운드에서 획득하는 모든 게임 점수가 2배! 기본 판정 규칙은 그대로입니다.',multiplier:2};

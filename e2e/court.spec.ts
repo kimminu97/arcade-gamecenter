@@ -22,3 +22,26 @@ test('친구 재판 Bot 수동 패널: true/false 강제 예측과 일반 서버
  for(let i=0;i<botIds.length;i++)await expect(host.locator(`[data-testid="court-vote-row"][data-player-id="${botIds[i]}"]`)).toContainText(i===0?'내가 1위다':'나는 아니다');
  }finally{await hc.close();await pc.close();}
 });
+
+test('요청 5명 사례와 잘못된1등 도전: 서버 벌칙·Host/휴대폰 UI·누적점수 일치',async({browser},info)=>{
+ const contexts:BrowserContext[]=[],pages:Page[]=[],names=['철수','민우','영호','정환','준혁'];let state:any;
+ try{const hc=await browser.newContext(),host=await hc.newPage();contexts.push(hc);host.on('websocket',ws=>ws.on('framereceived',({payload})=>{const t=String(payload);if(t.startsWith('42[')){try{const [event,data]=JSON.parse(t.slice(2));if(event==='state')state=data;}catch{}}}));await host.goto('http://127.0.0.1:3101');await host.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(host.getByTestId('arcade')).toHaveAttribute('data-role','host');const code=await host.getByTestId('arcade').getAttribute('data-room-code');
+ for(const name of names){const c=await browser.newContext({viewport:{width:390,height:844}}),p=await c.newPage();contexts.push(c);pages.push(p);await p.goto('http://127.0.0.1:3101/?room='+code);await p.getByPlaceholder('오늘의 게임 닉네임').fill(name);await p.getByRole('button',{name:'게임 참가하기 →',exact:true}).click();await expect(p.getByTestId('arcade')).toHaveAttribute('data-role','player');}
+ const ids=await Promise.all(pages.map(p=>p.getByTestId('arcade').getAttribute('data-player-id')));
+ const cases=[
+  {label:'사용자 예시',counts:[3,1,1,0,0],challenge:[0,1],penalty:[1,2,3,4]},
+  {label:'1등 실패와0표 잘못된 도전',counts:[3,1,1,0,0],challenge:[3],penalty:[0,3]},
+  {label:'단독1등 성공',counts:[3,1,1,0,0],challenge:[0],penalty:[1,2,3,4]},
+  {label:'공동1등 일부 성공',counts:[2,2,1,0,0],challenge:[0,3],penalty:[1,2,3,4]},
+  {label:'공동1등 모두 실패',counts:[2,2,1,0,0],challenge:[3],penalty:[0,1,3]},
+  {label:'전원 도전·단독',counts:[3,1,1,0,0],challenge:[0,1,2,3,4],penalty:[1,2,3,4]},
+  {label:'전원 도전·공동',counts:[2,2,1,0,0],challenge:[0,1,2,3,4],penalty:[2,3,4]},
+  {label:'전원 동일득표',counts:[1,1,1,1,1],challenge:[1],penalty:[0,2,3,4]},
+ ];
+ const actuals:any[]=[];
+ for(const c of cases){await test.step(c.label,async()=>{await host.locator('.game-select').getByRole('button',{name:'⚖️ 친구 재판',exact:true}).click();await host.locator('.host-controls > .yellow').click();await host.getByRole('button',{name:'확인하고 진행',exact:true}).click();await expect(host.getByTestId('arcade')).toHaveAttribute('data-phase','vote');const targets=c.counts.flatMap((n,i)=>Array(n).fill(i));await Promise.all(pages.map(async(p,i)=>{await expect(p.getByTestId('arcade')).toHaveAttribute('data-phase','vote');await p.locator('.vote-grid').getByRole('button',{name:'🐱 '+names[targets[i]],exact:true}).click();}));await Promise.all(pages.map(async(p,i)=>{await expect(p.getByTestId('arcade')).toHaveAttribute('data-phase','predict');await p.getByRole('button',{name:c.challenge.includes(i)?'😎 내가 1위다':'🙅 나는 아니다',exact:true}).click();}));await expect(host.getByTestId('arcade')).toHaveAttribute('data-phase','result');const expected=c.penalty.map(i=>ids[i]);await expect.poll(()=>state.round.result.penaltyPlayerIds).toEqual(expected);
+ for(const p of [host,...pages]){await expect(p.getByTestId('court-penalties').locator('..')).toHaveCSS('opacity','1');await p.getByTestId('court-penalties').scrollIntoViewIfNeeded();await expect(p.getByTestId('court-penalties').locator('[data-player-id]')).toHaveCount(expected.length);const rendered=await p.getByTestId('court-penalties').locator('[data-player-id]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-player-id')));expect(rendered).toEqual(expected);for(const i of c.penalty){await expect(p.getByTestId('court-penalties')).toContainText(names[i]);await expect(p.getByTestId('court-penalties').locator(`[data-player-id="${ids[i]}"]`)).toBeVisible();}}
+ const result=state.round.result;const top=ids.filter((_,i)=>c.counts[i]===Math.max(...c.counts));for(let i=0;i<5;i++)expect(result.points[ids[i]!]).toBe(c.challenge.includes(i)===top.includes(ids[i])?150:0);expect(state.players.every((p:any)=>p.score===state.history.reduce((s:number,h:any)=>s+(h.points[p.id]||0),0))).toBe(true);actuals.push({case:c.label,penalties:c.penalty.map(i=>names[i]),points:names.map((name,i)=>({name,points:result.points[ids[i]!]}))});if(c.label==='사용자 예시'){await host.getByTestId('court-results').screenshot({path:info.outputPath('court-requested-example.png')});await pages[1].reload();await expect(pages[1].getByTestId('court-penalties')).toContainText('민우');}});}
+ await info.attach('actual-court-results',{body:JSON.stringify(actuals,null,2),contentType:'application/json'});
+ }finally{await Promise.all(contexts.map(c=>c.close()));}
+});

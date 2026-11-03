@@ -11,6 +11,7 @@ test('7인 방, 초과 입장, 스파이 비밀 격리, 대기, 그림 권한, �
  await act(h,{type:'pause'});assert.equal((await act(players[0].s,{type:'submit',value:'일시정지 중'})).ok,false);await act(h,{type:'pause'});
  for(const p of players)assert.ok((await act(p.s,{type:'submit',value:(()=>{const c=states.get(p.s).round.spyAnswer;return c.type==='player'?states.get(p.s).round.ids[0]:c.type==='number'?1:c.options?.[0]??'먼저 이야기한다';})()})).ok);
  await act(h,{type:'advance'});for(let i=0;i<players.length;i++)assert.ok((await act(players[i].s,{type:'submit',value:players[(i+1)%7].id})).ok);
+ {const session=states.get(h).gameSession;await act(h,{type:'game:end',gameSessionId:session.id});await wait();let c=states.get(h).ceremony;await act(h,{type:'ceremony:summary',ceremonyId:c.id,version:c.version});await wait();c=states.get(h).ceremony;await act(h,{type:'ceremony:close',ceremonyId:c.id,version:c.version});}
  await act(h,{type:'start',mode:'draw'});await wait();const drawer=states.get(h).round.drawer;const artist=players.find(p=>p.id===drawer)!;const other=players.find(p=>p.id!==drawer)!;
  assert.ok(states.get(artist.s).round.word);assert.equal(states.get(other.s).round.word,undefined);assert.equal(states.get(h).round.word,undefined);
  const stroke={x:.4,y:.5,px:.3,py:.4,width:5,color:'#17112e'};assert.equal((await act(other.s,{type:'stroke',stroke})).ok,false);assert.ok((await act(artist.s,{type:'stroke',stroke})).ok);assert.ok((await act(artist.s,{type:'clear'})).ok);

@@ -24,3 +24,29 @@ for(const n of [5,6,7]){
  test(`${n}명 재판: 타이머 미제출·도전 없는 동점·전원 같은 표 도전/미도전`,()=>{const missing=resolveCourt(ids,joint,{});assert.equal(missing.missingPredictionPlayerIds.length,n);assert.deepEqual(missing.penaltyPlayerIds,missing.topVotedPlayerIds);assert.deepEqual(run(equal,ids).penaltyPlayerIds,[]);assert.deepEqual(run(equal,[]).penaltyPlayerIds,ids);const r=room(n);start(r,'court');for(const p of r.players)submit(r,p.id,r.players[0].id);advance(r);assert.equal(r.round!.phase,'result');assert.equal(r.round!.result.predictions[r.players[0].id],false);});
 }
 test('Bot 자동·수동 예측도 일반 boolean 제출 경로와 중복 검증 사용',()=>{const r=room(1),service=createDebugService('development',()=>{}),grant=service.command(r,'host',undefined,{type:'debug:unlock'}).grant!;const command=(type:string,args:any={})=>service.command(r,'host',grant,{type:'debug:'+type,...args});command('enable',{enabled:true});command('add',{count:4});command('config',{auto:false});start(r,'court');for(const p of r.players)submit(r,p.id,r.players[0].id);const bot=r.players[1];command('manual',{id:bot.id,action:{type:'submit',value:true}});assert.equal(r.round!.predictions[bot.id],true);assert.throws(()=>command('manual',{id:bot.id,action:{type:'submit',value:false}}));command('now');for(const p of r.players.slice(1))assert.equal(typeof r.round!.predictions[p.id],'boolean');submit(r,r.players[0].id,false);assert.equal(r.round!.phase,'result');});
+
+const namedCourtCases=[
+ {label:'사용자 예시 3·1·1·0·0: 성공자와 잘못된 도전',counts:[3,1,1,0,0],challenge:[0,1],penalty:[1,2,3,4]},
+ {label:'실제1등 실패 + 0표 잘못된 도전',counts:[3,1,1,0,0],challenge:[3],penalty:[0,3]},
+ {label:'단독1등 성공',counts:[3,1,1,0,0],challenge:[0],penalty:[1,2,3,4]},
+ {label:'공동1등 일부 성공 + 잘못된 도전',counts:[2,2,1,0,0],challenge:[0,3],penalty:[1,2,3,4]},
+ {label:'공동1등 모두 실패 + 0표 잘못된 도전',counts:[2,2,1,0,0],challenge:[3],penalty:[0,1,3]},
+ {label:'전원 도전·단독1등',counts:[3,1,1,0,0],challenge:[0,1,2,3,4],penalty:[1,2,3,4]},
+ {label:'전원 도전·공동1등',counts:[2,2,1,0,0],challenge:[0,1,2,3,4],penalty:[2,3,4]},
+ {label:'동일득표·일부 도전',counts:[1,1,1,1,1],challenge:[1],penalty:[0,2,3,4]},
+ {label:'동일득표·전원 도전',counts:[1,1,1,1,1],challenge:[0,1,2,3,4],penalty:[]},
+ {label:'유효투표0·전원 도전은 무효',counts:[0,0,0,0,0],challenge:[0,1,2,3,4],penalty:[]},
+];
+for(const c of namedCourtCases)test('요청 벌칙 재현: '+c.label,()=>{
+ const r=createRoom('court-verification');const names=['철수','민우','영호','정환','준혁'];for(let i=0;i<5;i++)join(r,names[i],'🐱','voter'+i);
+ const ids=r.players.map(p=>p.id),targets=c.counts.flatMap((count,i)=>Array(count).fill(ids[i]));start(r,'court');const g=r.round!;
+ if(targets.length)targets.forEach((id,i)=>submit(r,ids[i],id));else advance(r);
+ assert.equal(g.phase,'predict');for(let i=0;i<5;i++)submit(r,ids[i],c.challenge.includes(i));assert.equal(g.phase,'result');
+ const actual=g.result,expected=c.penalty.map(i=>ids[i]);assert.deepEqual(actual.penaltyPlayerIds,expected);assert.equal(new Set(actual.penaltyPlayerIds).size,expected.length);assert.deepEqual(ids.map(id=>actual.voteCounts[id]),c.counts);
+ const top=c.counts.some(Boolean)?ids.filter((_,i)=>c.counts[i]===Math.max(...c.counts)):[];assert.deepEqual(actual.topVotedPlayerIds,top);
+ for(let i=0;i<5;i++){const shouldScore=targets.length>0&&(c.challenge.includes(i)===top.includes(ids[i]));assert.equal(actual.points[ids[i]],shouldScore?150:0);assert.equal(r.players[i].score,shouldScore?150:0);assert.deepEqual(view(r,ids[i]).round!.result.penaltyPlayerIds,expected);}
+ assert.deepEqual(view(r,'',true).round!.result.penaltyPlayerIds,expected);const scores=r.players.map(p=>p.score);finish(r);finish(r);assert.deepEqual(r.players.map(p=>p.score),scores);assert.equal(r.history.length,1);assert.ok(r.players.every(p=>p.score===r.history.reduce((sum,h)=>sum+(h.points[p.id]||0),0)));
+ if(targets.length){const wrong=ids.filter((id,i)=>c.challenge.includes(i)&&!top.includes(id));for(const id of wrong)assert.ok(actual.penaltyPlayerIds.includes(id));}
+});
+
+test('외부 투표를 무시하고 참가자 ID로 벌칙 구분',()=>{const ids=['player-A','player-B','player-C','player-D','player-E'];const result=resolveCourt(ids,{a:'invalid','player-A':'player-A','player-B':'player-A','player-C':'player-A','player-D':'player-B','player-E':'player-C'},{'player-A':false,'player-B':false,'player-C':false,'player-D':true,'player-E':false});assert.deepEqual(result.penaltyPlayerIds,['player-A','player-D']);assert.equal(result.validVoteCount,5);});

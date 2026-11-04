@@ -1,21 +1,22 @@
+import {normalizeMafiaRules,type MafiaRules} from './raid';
 import {randomInt} from 'node:crypto';
 import {roles,getRole,roleSetups,compositionValidators,type RoleId,type Team} from './roles';
 export type ConfigTeam='mafia'|'citizen'|'neutral';
-export type MafiaConfig={version:1;mode:'direct'|'teamRandom';playerCount:number;direct:Record<string,number>;teams:Record<ConfigTeam,number>;candidates:Record<ConfigTeam,string[]>};
+export type MafiaConfig={rules?:MafiaRules;version:1;mode:'direct'|'teamRandom';playerCount:number;direct:Record<string,number>;teams:Record<ConfigTeam,number>;candidates:Record<ConfigTeam,string[]>};
 export type MafiaSetupState={revision:number;config:MafiaConfig;presetId?:string};
 export type SetupRoom={players:{id:string;online:boolean;excluded:boolean}[];round:{mode:string;phase:string}|null;mafiaSetup?:MafiaSetupState};
 const teams:ConfigTeam[]=['mafia','citizen','neutral'];export const teamNames:Record<ConfigTeam,string>={mafia:'마피아팀',citizen:'시민팀',neutral:'중립팀'};
 export const configTeam=(team:Team):ConfigTeam=>team==='town'?'citizen':team;
 export const availableSystems=new Set(['sharedAttack','nightActions','dayVote','privateChat','reports','news']);
 export function roleCatalog(){return Object.values(roles).map(role=>({...role,team:configTeam(role.team)}));}
-export function defaultMafiaConfig(n:number):MafiaConfig{const count=roleSetups[n]?n:5,direct={...roleSetups[count]};return{version:1,mode:'direct',playerCount:count,direct,teams:totals(Object.entries(direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId))),candidates:{mafia:['mafia'],citizen:['citizen','police','doctor'],neutral:[]}};}
+export function defaultMafiaConfig(n:number):MafiaConfig{const count=roleSetups[n]?n:5,direct={...roleSetups[count]};return{rules:normalizeMafiaRules(undefined),version:1,mode:'direct',playerCount:count,direct,teams:totals(Object.entries(direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId))),candidates:{mafia:['mafia'],citizen:['citizen','police','doctor'],neutral:[]}};}
 export function normalizeMafiaConfig(input:any):MafiaConfig{
  if(!input||typeof input!=='object'||input.version!==1||!['direct','teamRandom'].includes(input.mode)||!Number.isInteger(input.playerCount)||input.playerCount<5||input.playerCount>7)throw Error('직업 설정 형식·버전·기준 인원(5~7명)을 확인하세요.');
  const direct:Record<string,number>=Object.create(null);if(!input.direct||typeof input.direct!=='object'||Array.isArray(input.direct)||Object.keys(input.direct).length>30)throw Error('직업별 인원 설정을 확인하세요.');
  for(const [id,n] of Object.entries(input.direct)){if(id.length>64||!Number.isInteger(n)||Number(n)<0||Number(n)>7)throw Error('직업 인원은 0~7 정수입니다.');direct[id]=Number(n);}
  const fixed={} as Record<ConfigTeam,number>,candidates={} as Record<ConfigTeam,string[]>;
  for(const team of teams){const n=input.teams?.[team],pool=input.candidates?.[team];if(!Number.isInteger(n)||n<0||n>7||!Array.isArray(pool)||pool.length>25||pool.some(id=>typeof id!=='string'||id.length>64))throw Error('진영별 인원과 후보 목록을 확인하세요.');fixed[team]=n;candidates[team]=[...pool];}
- return{version:1,mode:input.mode,playerCount:input.playerCount,direct,teams:input.mode==='direct'?totals(Object.entries(direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId))):fixed,candidates};
+ return{rules:normalizeMafiaRules(input.rules),version:1,mode:input.mode,playerCount:input.playerCount,direct,teams:input.mode==='direct'?totals(Object.entries(direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId))):fixed,candidates};
 }
 function totals(slots:RoleId[]){const counts:Record<ConfigTeam,number>={mafia:0,citizen:0,neutral:0};for(const id of slots){const role=getRole(id);if(role)counts[configTeam(role.team)]++;}return counts;}
 function slotErrors(slots:RoleId[],n:number){const errors:string[]=[],counts=new Map<RoleId,number>();for(const id of slots)counts.set(id,(counts.get(id)||0)+1);
@@ -29,7 +30,8 @@ export function validateMafiaConfig(config:MafiaConfig,n:number){const errors:st
  if(config.mode==='direct'){const slots=Object.entries(config.direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId));selectedTotal=slots.length;counts=totals(slots);errors.push(...slotErrors(slots,n));}
  else{counts={...config.teams};selectedTotal=Object.values(counts).reduce((a,b)=>a+b,0);for(const team of teams){const pool=config.candidates[team];if(new Set(pool).size!==pool.length)errors.push(teamNames[team]+' 후보 직업이 중복되었습니다.');let capacity=0;for(const id of pool){const r=getRole(id);if(!r){errors.push('등록되지 않은 직업 ID: '+id);continue;}if(configTeam(r.team)!==team)errors.push(r.name+'의 후보 진영이 잘못되었습니다.');if(r.implementationStatus!=='implemented')errors.push(r.name+'은 아직 구현되지 않았습니다.');else if(!r.enabled)errors.push(r.name+'은 비활성 직업입니다.');else if(n<r.minPlayers)errors.push(r.name+'의 최소 인원 조건을 만족하지 않습니다.');else capacity+=r.maxCopies;}
  if(counts[team]>capacity)errors.push(`${teamNames[team]} 후보 직업 슬롯이 부족합니다 (${capacity}/${counts[team]}).`);}}
- if(selectedTotal!==n)errors.push(`참가자가 ${n}명인데 직업은 ${selectedTotal}명분입니다.`);if(counts.mafia<1)errors.push('마피아팀이 최소 1명 필요합니다.');if(counts.citizen<1)errors.push('시민팀이 최소 1명 필요합니다.');if(counts.neutral>1)errors.push('중립은 최대 1명입니다.');if(counts.neutral>0)errors.push('중립 직업은 아직 구현되지 않았습니다.');if(counts.mafia>=counts.citizen+counts.neutral&&counts.mafia>0)errors.push('이 구성은 시작과 동시에 마피아가 승리합니다.');
+ if(selectedTotal!==n)errors.push(`참가자가 ${n}명인데 직업은 ${selectedTotal}명분입니다.`);if(counts.mafia<1)errors.push('마피아팀이 최소 1명 필요합니다.');if(counts.citizen<1)errors.push('시민팀이 최소 1명 필요합니다.');if(counts.neutral>1)errors.push('중립은 최대 1명입니다.');if(counts.mafia>counts.citizen+counts.neutral&&counts.mafia>0)errors.push('이 구성은 시작과 동시에 마피아가 승리합니다.');
+ if(!normalizeMafiaRules(config.rules).mafiaChat&&(config.mode==='direct'?(config.direct.mimic||0)>0:config.candidates.citizen.includes('mimic')))errors.push('흉내쟁이 또는 흉내쟁이 후보가 있으면 마피아 채팅을 ON으로 설정하세요.');
  if(config.mode==='teamRandom'&&!errors.length){let found=false;try{const why=enumerate(config,n,()=>{found=true;return true;});if(!found)errors.push('후보 중 유효한 전체 직업 조합이 없습니다.',...why);}catch(e){errors.push((e as Error).message);}}
  if(counts.mafia>=2&&counts.citizen+counts.neutral-counts.mafia<=2&&counts.mafia<counts.citizen+counts.neutral)warnings.push('마피아와 비마피아 인원 차가 작아 매우 짧은 게임이 될 수 있습니다.');return{valid:errors.length===0,errors:[...new Set(errors)],warnings,totals:counts,selectedTotal,playerCount:n};}
 export function drawMafiaSlots(input:MafiaConfig,n:number){const config=normalizeMafiaConfig(input),check=validateMafiaConfig(config,n);if(!check.valid)throw Error(check.errors.join(' '));if(config.mode==='direct')return Object.entries(config.direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId));let chosen:RoleId[]|undefined,seen=0;enumerate(config,n,slots=>{seen++;if(randomInt(seen)===0)chosen=slots;return false;});if(!chosen)throw Error('유효한 직업 조합을 추첨할 수 없습니다.');return chosen;}

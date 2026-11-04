@@ -1,3 +1,4 @@
+import './phase1.test';
 import {appendGamePolicyFixture} from '../scripts/chat-fixture';
 import{test}from'node:test';import assert from'node:assert/strict';import{mkdirSync,mkdtempSync,writeFileSync,readFileSync}from'node:fs';import{join,resolve}from'node:path';
 import {bankDiagnostics,questionPage} from '../server/chat/bank-diagnostics';

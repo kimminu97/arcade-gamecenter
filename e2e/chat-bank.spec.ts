@@ -3,7 +3,7 @@ import {mkdtempSync,mkdirSync,readFileSync} from 'node:fs';
 import {resolve,join} from 'node:path';
 import {writeFixture,appendContextFixture} from '../scripts/chat-fixture';
 test('문제은행 생성 완료 자동 갱신·AUTO_READY API·맥락 기본 표시·빈 이유·오류 복구·제외 보존',async({page})=>{
- const base='http://127.0.0.1:3101';await page.goto(base);await page.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(page.getByTestId('arcade')).toHaveAttribute('data-role','host');const session=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('arcade-session')!));const headers={'x-room-code':session.code,authorization:'Bearer '+session.token};
+ const base='http://127.0.0.1:3101';await page.goto(base);await expect(page.getByText('● 실시간 연결',{exact:true})).toBeVisible({timeout:30000});await page.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(page.getByTestId('arcade')).toHaveAttribute('data-role','host');await expect(page.getByTestId('arcade')).toHaveAttribute('data-room-code',/^[0-9A-F]{6}$/);const session=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('arcade-session')!));const headers={'x-room-code':session.code,authorization:'Bearer '+session.token};
  const api=async(path:string,data?:any)=>{const r=await page.request.fetch(base+'/api/chat/'+path,{method:data===undefined?'GET':'POST',headers,...(data===undefined?{}:{data})});expect(r.ok()).toBe(true);return r.json();};
  await page.request.delete(base+'/api/chat/data',{headers:{...headers,'x-confirm-delete':'DELETE LOCAL CHAT DATA'}});
  await page.getByRole('button',{name:'💬 카카오톡 분석 · 문제은행 열기',exact:true}).click();await expect(page.getByTestId('question-empty-reason')).toContainText('DB');

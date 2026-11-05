@@ -6,7 +6,8 @@ import {assertReportNight,validateReportText,persistCivic,persistPost,persistExe
 import type {PrivateMessage} from './communications';
 export type CivicAction={id:string;gameSessionId:string;ownerId:string;roleId:'judge'|'bodyguard'|'coroner';targetId:string;nightId:string;day:number;requestId:string;at:number;executionId?:string;cancel?:boolean};
 export type CivicResult={id:string;ownerId:string;targetId:string;day:number;roleId?:RoleId;roleName?:string;protected?:boolean};
-export type Execution={id:string;gameSessionId:string;day:number;executionCandidate?:string;voteCounts:Record<string,number>;isTie:boolean;validVotes:number;endsAt:number;wasCancelled:boolean;executedPlayerId?:string;finalExecutionStatus:'pending'|'cancelled'|'confirmed'|'noCandidate';decision?:CivicAction;voteRecords?:Readonly<Record<string,string>>;livingPlayersBeforeExecution?:readonly string[];personalWinResult?:WinResult};
+export type Revenge={ownerId:string;candidates:readonly string[];endsAt:number;status:'pending'|'submitted'|'timedOut'|'unavailable';requestId?:string;targetId?:string;correct?:boolean;resolvedAt?:number};
+export type Execution={blockedVoterIds?:readonly string[];id:string;gameSessionId:string;day:number;executionCandidate?:string;voteCounts:Record<string,number>;isTie:boolean;validVotes:number;endsAt:number;wasCancelled:boolean;executedPlayerId?:string;finalExecutionStatus:'pending'|'cancelled'|'confirmed'|'noCandidate';decision?:CivicAction;voteRecords?:Readonly<Record<string,string>>;livingPlayersBeforeExecution?:readonly string[];personalWinResult?:WinResult;revenge?:Readonly<Revenge>};
 export const emptyCivic=()=>({actions:[] as CivicAction[],results:[] as CivicResult[]});
 const rejectIdentity=(a:any)=>{if(['ownerId','senderId','senderPlayerId','recipientId','playerId','roleId'].some(k=>Object.hasOwn(a,k)))throw Error('참가자 신원은 서버에서 확인합니다.');};
 export function submitCivic(m:MafiaState,id:string,a:any,now=Date.now()){

@@ -48,3 +48,18 @@ main.yang-tv{max-width:none;width:100%;height:100dvh;min-height:0;padding:24px 3
 .mafia-communications textarea{display:block;width:100%;min-height:100px;margin-top:8px;resize:vertical}.mafia-communications select{display:block;width:100%;margin:8px 0 14px}.mafia-private-messages{margin-top:20px;text-align:left}.mafia-private-messages blockquote{white-space:pre-wrap;overflow-wrap:anywhere}.mafia-private-messages p{font-size:.85rem;color:#beb7d2}
 
 .mafia-overlay[hidden]{display:none!important}.mafia-overlay{position:fixed;inset:12px;z-index:100;background:#171329;border:1px solid #777098;border-radius:20px;overflow:auto;padding:20px;box-shadow:0 0 0 20px #080612dd;text-align:left}.mafia-overlay-header{display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:-20px;background:#171329;padding:10px 0;z-index:1}.mafia-overlay-header h2{font-size:1.3rem}.mafia-overlay blockquote{white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0}.mafia-overlay button{min-height:44px}.mafia-inbox-launch,.mafia-team-launch{margin:12px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.mafia-inbox select{display:block;width:100%;margin:10px 0}.mafia-overlay .mafia-chat-log{height:32dvh;min-height:140px;max-height:300px}.mafia-overlay .mafia-chat{margin:10px 0}.mafia-overlay article{border-top:1px solid #49425d;padding:10px 0}
+
+/* Keep the night raid controls ahead of the private chat on phones. */
+.mafia-team-launch>.mafia-raid-entry{border-color:#ffe477;color:#ffe477;background:#342b43}
+.mafia-team-panel .mafia-overlay-header h2{min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+.mafia-team-panel .mafia-overlay-header>button{flex-shrink:0}
+.mafia-team-panel .mafia-team-privacy{margin:6px 0 12px;font-size:12px}
+.mafia-raid{padding:14px;border:2px solid #ffe47799;border-radius:16px;background:#342b43;margin:10px 0 18px}
+.mafia-raid h3{margin:0 0 8px;font-size:18px;font-weight:800;color:#ffe477}
+.mafia-raid p{margin:8px 0;font-size:13px;color:#d6cce6;line-height:1.5}
+.mafia-raid .mafia-raid-status{font-weight:700;color:#ffe477}
+.mafia-raid .vote-grid{margin-top:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.mafia-raid .vote-grid button{min-height:48px;padding:12px 8px;border-color:#c9a3ff88;background:#26243e;overflow-wrap:anywhere}
+.mafia-raid .vote-grid button:hover:not(:disabled){background:#4c366f;border-color:#ffe477}
+.mafia-raid .vote-grid button[aria-pressed=true]{border-color:#ffe477;background:#564b2a;color:#fff1b5;box-shadow:inset 0 0 0 1px #ffe477}
+@media(max-width:600px){.mafia-team-panel{padding:14px}.mafia-team-panel .mafia-overlay-header{top:-14px;align-items:flex-start}.mafia-team-panel .mafia-overlay-header h2{font-size:18px;line-height:1.4;margin:0}.mafia-team-panel .mafia-overlay-header>button{padding:8px 12px}.mafia-raid{padding:12px}.mafia-raid .vote-grid{gap:8px}}

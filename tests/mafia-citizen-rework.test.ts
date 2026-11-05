@@ -1,0 +1,71 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{randomUUID}from'node:crypto';import{DatabaseSync}from'node:sqlite';import{mkdirSync}from'node:fs';
+import{createMafia,advanceMafia,submitMafia,submitRevenge,mafiaView,victoryRules}from'../server/mafia/engine';
+import{defaultMafiaConfig,normalizeMafiaConfig,drawMafiaSlots,roleCatalog}from'../server/mafia/config';
+import{submitCitizenAction,voteBlocked}from'../server/mafia/citizen-rework';
+import{submitCivic,submitJudgement}from'../server/mafia/civic';import{submitNeutralAction}from'../server/mafia/neutral-progress';
+import{configureMafiaReports}from'../server/mafia/reports';import{openMafiaReportStore}from'../server/mafia/report-store';import{openMafiaPresets}from'../server/mafia/presets';import{roles,type RoleId}from'../server/mafia/roles';
+const make=(deck:RoleId[])=>{const ids=deck.map((_,i)=>'p'+i),direct:Record<string,number>={};for(const r of deck)direct[r]=(direct[r]||0)+1;let m:ReturnType<typeof createMafia>;do{m=createMafia(ids,60,{...defaultMafiaConfig(ids.length),direct});}while(deck.some((r,i)=>roles[r].team==='neutral'&&m.roleById[ids[i]]!==r));m.roleById=Object.fromEntries(ids.map((id,i)=>[id,deck[i]]));return m;};
+const next=(m:ReturnType<typeof make>)=>advanceMafia(m,m.version,m.phase==='EXECUTION_PENDING'?m.executionPending!.endsAt:Date.now());
+const discuss=(m:ReturnType<typeof make>)=>{next(m);next(m);next(m);};
+const a=(m:ReturnType<typeof make>,targetId:string)=>({roundId:m.id,nightId:m.nightId,day:m.day,requestId:randomUUID(),targetId});
+const vote=(m:ReturnType<typeof make>,id:string,targetId:string)=>submitMafia(m,id,{...a(m,targetId),version:m.version,revision:m.revisions[id]||0});
+const cycle=(m:ReturnType<typeof make>)=>{for(let i=0;i<5;i++)next(m);};
+
+test('투표 봉쇄: 낮 토론·다른 생존자·1회·중복·다음 낮 만료·서버 차단',()=>{
+ const m=make(['mafia','voteBlocker','voteAppraiser','judge','citizen']);assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p0')));discuss(m);assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p1')));assert.throws(()=>submitCitizenAction(m,'p0',a(m,'p2')));assert.throws(()=>submitCitizenAction(m,'p1',{...a(m,'p0'),ownerId:'p2'}));
+ const request=a(m,'p0');submitCitizenAction(m,'p1',request);assert.equal(submitCitizenAction(m,'p1',request).duplicate,true);assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p2')));next(m);assert.throws(()=>vote(m,'p0','p1'));assert.deepEqual(mafiaView(m,'p0').targets,[]);assert.equal(mafiaView(m,'p0').voteBlocked,true);assert.equal(mafiaView(m,'p2').voteBlocked,false);
+ for(const id of ['p1','p2','p3','p4'])vote(m,id,id);assert.equal(m.phase,'DAY_RESOLUTION');assert.equal(m.executions[0].validVotes,4);assert.deepEqual(m.executions[0].blockedVoterIds,['p0']);next(m);assert.equal(voteBlocked(m,'p0'),false);assert.equal(mafiaView(m,'p1').citizenAbility?.remaining,0);
+});
+test('감정: 최종 유효표/기권만 개인 공개·봉쇄 표 제거·판사 취소 뒤 유지',()=>{
+ const m=make(['mafia','voteBlocker','voteAppraiser','judge','citizen']);discuss(m);submitCitizenAction(m,'p1',a(m,'p0'));submitCitizenAction(m,'p2',a(m,'p0'));next(m);m.votes={p0:'p2',p1:'p4',p2:'p4'};next(m);assert.equal(m.executionPending!.validVotes,2);assert.equal(m.executionPending!.voteRecords!.p0,undefined);assert.equal(mafiaView(m,'p2').citizenAbility!.results[0].votedFor,undefined);assert.equal(mafiaView(m,'').citizenAbility,undefined);assert.equal(mafiaView(m,'p4').citizenAbility,undefined);assert.equal(JSON.stringify(mafiaView(m,'')).includes('blockedVoterIds'),false);
+ submitJudgement(m,'p3',{...a(m,'p4'),executionId:m.executionPending!.id,cancel:true});next(m);assert.equal(m.events.at(-1)!.wasCancelled,true);assert.equal(mafiaView(m,'p2').citizenAbility!.results.length,1);
+ const n=make(['mafia','voteAppraiser','citizen','citizen','citizen']);discuss(n);submitCitizenAction(n,'p1',a(n,'p2'));next(n);n.votes={p2:'p2'};next(n);assert.equal(mafiaView(n,'p1').citizenAbility!.results[0].votedFor,'p2');
+});
+test('봉쇄·감정은 성공 저장 때만 소모: 실패 후 재시도',()=>{
+ const m=make(['mafia','voteBlocker','voteAppraiser','citizen','citizen']);discuss(m);configureMafiaReports({receive:()=>{},reserve:()=>{},publish:()=>{},citizen:()=>{throw Error('disk');}});try{assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p0')));assert.equal(mafiaView(m,'p1').citizenAbility!.remaining,1);}finally{configureMafiaReports();}submitCitizenAction(m,'p1',a(m,'p0'));assert.equal(mafiaView(m,'p1').citizenAbility!.remaining,0);
+});
+for(const protection of ['none','doctor','bodyguard'] as const)test('방패: '+protection+' 우선·미습격 유지·소모·처형 소멸·비공개',()=>{
+ const m=make(['mafia','shieldMaker',protection==='none'?'citizen':protection,'citizen','citizen']);next(m);assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p1')));const request=a(m,'p3');submitCitizenAction(m,'p1',request);assert.equal(submitCitizenAction(m,'p1',request).duplicate,true);assert.throws(()=>submitCitizenAction(m,'p1',a(m,'p4')));assert.equal(mafiaView(m,'p3').citizenAbility,undefined);cycle(m);vote(m,'p0','p3');
+ if(protection==='doctor')vote(m,'p2','p3');if(protection==='bodyguard')submitCivic(m,'p2',a(m,'p3'));next(m);assert.deepEqual(m.events.at(-1)!.deaths,[]);assert.equal(m.citizen.shields[0].status,protection==='none'?'consumed':'active');
+ if(protection!=='none'){for(let i=0;i<4;i++)next(m);vote(m,'p0','p3');next(m);assert.equal(m.citizen.shields[0].status,'consumed');}
+ const n=make(['mafia','shieldMaker','citizen','citizen','citizen']);next(n);submitCitizenAction(n,'p1',a(n,'p3'));next(n);next(n);next(n);n.votes={p0:'p3'};next(n);next(n);assert.ok(!n.alive.includes('p3'));assert.equal(n.citizen.shields[0].status,'expired');
+});
+test('초기 마피아 수 고정: 1명 동수 승리/0명 시민·2명 출발은 1명 남아도 초과만',()=>{
+ const one=make(['mafia','citizen','citizen','citizen','citizen']);one.alive=['p0','p1'];assert.equal(victoryRules[0](one)?.team,'mafia');one.alive=['p1'];assert.equal(victoryRules[0](one)?.team,'town');assert.throws(()=>{(one as any).initialMafiaCount=2;});
+ const two=make(['mafia','mafia','citizen','citizen','citizen']);two.alive=['p0','p2'];assert.equal(victoryRules[0](two),undefined);two.alive=['p0'];assert.equal(victoryRules[0](two)?.team,'mafia');
+});
+test('중립 광대 우선 및 봉쇄된 폭탄 표적/도박사 실제 표 부재',()=>{
+ const m=make(['mafia','voteBlocker','bomber','citizen','citizen']);next(m);submitNeutralAction(m,'p2',a(m,'p0'));next(m);next(m);submitCitizenAction(m,'p1',a(m,'p0'));next(m);m.votes={p0:'p2',p1:'p2',p3:'p2'};next(m);next(m);assert.notEqual(m.winner,'neutral');assert.equal(m.executions[0].voteRecords!.p0,undefined);
+ const n=make(['mafia','voteBlocker','jester','citizen','citizen']);discuss(n);submitCitizenAction(n,'p1',a(n,'p0'));next(n);n.votes={p1:'p2',p3:'p2'};next(n);next(n);assert.equal(n.winner,'neutral');
+});
+test('새26직업·구 프리셋 읽기 변환/원본 JSON·과거 이름 보존',()=>{
+ assert.equal(roleCatalog().length,26);for(const [team,count]of[['citizen',12],['mafia',5],['neutral',9]]as const)assert.equal(roleCatalog().filter(r=>r.team===team).length,count);
+ const old={...defaultMafiaConfig(5),direct:{mafia:1,informant:1,archivist:1,wiretapper:1,citizen:1}};const cfg=normalizeMafiaConfig(old);assert.deepEqual(drawMafiaSlots(cfg,5).sort(),['mafia','voteBlocker','voteAppraiser','shieldMaker','citizen'].sort());assert.equal(roles.informant.roleName,'정보원');assert.equal(roles.informant.enabled,false);
+ mkdirSync('.chat-test-data',{recursive:true});const path='.chat-test-data/preset-'+randomUUID()+'.sqlite';let store=openMafiaPresets(path);const saved=store.save({name:'legacy',config:cfg});store.close();const db=new DatabaseSync(path);db.prepare('UPDATE MafiaPreset SET configJson=? WHERE id=?').run(JSON.stringify(old),saved.id);db.close();store=openMafiaPresets(path);assert.equal(store.get(saved.id).config.direct.voteBlocker,1);store.close();const raw=new DatabaseSync(path);assert.equal(JSON.parse((raw.prepare('SELECT configJson FROM MafiaPreset WHERE id=?').get(saved.id)as any).configJson).direct.informant,1);raw.close();
+});
+test('SQLite v9: 능력·감정/투표 원자성·초기 수·rollback 후 재시도·재오픈',()=>{
+ mkdirSync('.chat-test-data',{recursive:true});const path='.chat-test-data/citizen-'+randomUUID()+'.sqlite',store=openMafiaReportStore(path);configureMafiaReports(store);try{const m=make(['mafia','voteBlocker','voteAppraiser','judge','citizen']);discuss(m);submitCitizenAction(m,'p1',a(m,'p0'));submitCitizenAction(m,'p2',a(m,'p0'));next(m);m.votes={p1:'p4'};const db=new DatabaseSync(path);db.exec("CREATE TRIGGER failCitizen BEFORE UPDATE ON MafiaCitizenState BEGIN SELECT RAISE(ABORT,'disk');END");assert.throws(()=>next(m));assert.equal(m.phase,'DAY_VOTE');assert.equal(m.citizen.results.length,0);assert.equal((db.prepare('SELECT COUNT(*) n FROM MafiaExecution').get()as any).n,0);db.exec('DROP TRIGGER failCitizen');next(m);const saved=JSON.parse((db.prepare('SELECT stateJson FROM MafiaCitizenState WHERE gameSessionId=?').get(m.id)as any).stateJson);assert.equal(saved.initialMafiaCount,1);assert.equal(saved.actions.length,2);assert.equal(saved.results.length,1);db.close();}finally{configureMafiaReports();store.close();}const again=new DatabaseSync(path);assert.equal((again.prepare('PRAGMA quick_check').get()as any).quick_check,'ok');again.close();
+});
+test('추가: 봉쇄된 여론 조작가 외부표·도박사 자기표는 중립 누적에 미포함',()=>{
+ for(const neutral of ['agitator','gambler']as const){const m=make(['mafia','voteBlocker',neutral,'citizen','citizen']);discuss(m);const goal=m.neutralObjectives[0],victim=neutral==='agitator'?goal.targetId!:'p3',blocked=neutral==='gambler'?'p2':m.ids.find(id=>id!=='p2'&&id!=='victim')!;submitCitizenAction(m,'p1',a(m,blocked==='p1'?'p0':blocked));const actual=m.citizen.actions[0].targetId;next(m);m.votes={[actual]:neutral==='gambler'?'p2':victim,p2:neutral==='gambler'?'p2':victim,p4:victim};if(actual==='p4')m.votes.p3=victim;next(m);next(m);assert.notEqual(m.winner,'neutral');if(neutral==='gambler')assert.equal(m.neutralProgress.ballots[0].selfVote,false);else assert.equal(m.executions[0].voteRecords![actual],undefined);}
+});
+test('추가: 봉쇄된 예언자는 유효 투표 없음으로 기존 비투표 조건 적용',()=>{
+ const m=make(['mafia','voteBlocker','prophet','citizen','citizen']);discuss(m);const target=m.neutralObjectives[0].targetId!;submitCitizenAction(m,'p1',a(m,'p2'));next(m);m.votes={p2:target,p0:target,p3:target};next(m);next(m);assert.equal(m.winner,'neutral');assert.equal(m.executions[0].voteRecords!.p2,undefined);
+});
+test('추가: 복수귀 후보에서 봉쇄 표 제외·마피아1명 동수 판정15초 보류',()=>{
+ const m=make(['mafia','voteBlocker','revenant','citizen','citizen']);discuss(m);submitCitizenAction(m,'p1',a(m,'p0'));m.alive=['p0','p1','p2'];next(m);m.votes={p0:'p2',p1:'p2'};next(m);next(m);assert.equal(m.phase,'REVENGE_PENDING');assert.equal(m.winner,undefined);assert.deepEqual(m.revengePending!.revenge!.candidates,['p1']);assert.throws(()=>submitRevenge(m,'p2',{roundId:m.id,executionId:m.revengePending!.id,requestId:randomUUID(),targetId:'p0'}));advanceMafia(m,m.version,m.revengePending!.revenge!.endsAt);assert.equal(m.winner,'mafia');
+});
+test('추가: 밤 판정 DB 실패는 방패 소모·사망·승리·영수증 모두 rollback',()=>{
+ const path='.chat-test-data/shield-rollback-'+randomUUID()+'.sqlite',store=openMafiaReportStore(path);configureMafiaReports(store);try{const m=make(['mafia','shieldMaker','citizen','citizen','citizen']);next(m);submitCitizenAction(m,'p1',a(m,'p3'));cycle(m);vote(m,'p0','p3');const db=new DatabaseSync(path);db.exec("CREATE TRIGGER failShield BEFORE INSERT ON MafiaRaidOutcome WHEN NEW.day=2 BEGIN SELECT RAISE(ABORT,'disk');END");assert.throws(()=>next(m));assert.equal(m.phase,'NIGHT');assert.equal(m.citizen.shields[0].status,'active');assert.equal(m.nightResolutions[m.nightId],undefined);assert.equal(JSON.parse((db.prepare('SELECT stateJson FROM MafiaCitizenState WHERE gameSessionId=?').get(m.id)as any).stateJson).shields[0].status,'active');db.exec('DROP TRIGGER failShield');next(m);assert.equal(m.citizen.shields[0].status,'consumed');assert.deepEqual(m.events.at(-1)!.deaths,[]);db.close();}finally{configureMafiaReports();store.close();}
+});
+test('추가: v8→v9 마이그레이션이 과거 직업·게임 결과 JSON과 기존 데이터를 보존',()=>{
+ const path='.chat-test-data/v8-compat-'+randomUUID()+'.sqlite';openMafiaReportStore(path).close();let db=new DatabaseSync(path);const historical=JSON.stringify({roleId:'informant',roleName:'정보원',team:'town'});db.prepare('INSERT INTO MafiaGameResult VALUES(?,?,?,?,?,?)').run('legacy','town','[]','legacy',historical,1);db.exec("UPDATE MafiaReportMeta SET value='8';CREATE TABLE Preserve(value TEXT);INSERT INTO Preserve VALUES('keep')");db.close();openMafiaReportStore(path).close();db=new DatabaseSync(path);assert.equal((db.prepare('SELECT resultJson FROM MafiaGameResult').get()as any).resultJson,historical);assert.equal((db.prepare('SELECT value FROM Preserve').get()as any).value,'keep');assert.equal((db.prepare('SELECT value FROM MafiaReportMeta').get()as any).value,'9');db.close();
+});
+test('추가 경계: 실제 밤 종료·낮 처형에서 초기1명 동수 종료, 초기2명 동수 계속',()=>{
+ for(const count of [1,2]){const m=make(count===1?['mafia','citizen','citizen','citizen','citizen']:['mafia','mafia','citizen','citizen','citizen']);next(m);cycle(m);m.alive=['p0','p2','p3'];vote(m,'p0','p3');next(m);assert.equal(m.winner,count===1?'mafia':undefined);}
+ const day=make(['mafia','citizen','citizen','citizen','citizen']);discuss(day);day.alive=['p0','p1','p2'];next(day);day.votes={p0:'p2'};next(day);next(day);assert.equal(day.winner,'mafia');
+ const cancel=make(['mafia','judge','citizen','citizen','citizen']);discuss(cancel);cancel.alive=['p0','p1','p2'];next(cancel);cancel.votes={p0:'p2'};next(cancel);submitJudgement(cancel,'p1',{...a(cancel,'p2'),executionId:cancel.executionPending!.id,cancel:true});next(cancel);assert.equal(cancel.winner,undefined);assert.equal(cancel.alive.length,3);
+});
+test('추가 경계: 일반 미투표 감정도 기권, 사망·자기·잘못된 단계의 지급은 횟수 미소모',()=>{
+ const m=make(['mafia','voteAppraiser','shieldMaker','citizen','citizen']);next(m);m.alive=m.alive.filter(id=>id!=='p4');assert.throws(()=>submitCitizenAction(m,'p2',a(m,'p4')));assert.throws(()=>submitCitizenAction(m,'p2',a(m,'p2')));next(m);next(m);assert.throws(()=>submitCitizenAction(m,'p2',a(m,'p1')));assert.equal(mafiaView(m,'p2').citizenAbility!.remaining,1);submitCitizenAction(m,'p1',a(m,'p3'));next(m);m.votes={p0:'p2'};next(m);assert.equal(mafiaView(m,'p1').citizenAbility!.results[0].votedFor,undefined);
+});

@@ -12,5 +12,26 @@ export function MafiaTeamPanel({m,players,playerId,online,remaining,call}:{m:any
  if(!chat&&!m.attack)return null;
  const attack=async(targetId:string)=>{if(busy)return;setBusy(true);setError('');try{const out=await call({type:'mafia:attack',value:{roundId:m.id,nightId:m.nightId,version:m.version,revision:m.revision,targetId}});if(!out?.ok)setError(out?.error||'공동 공격을 확인하세요.');}finally{setBusy(false);}};
  const enemies=m.alive;
- return <section className="mafia-team-launch"><button onClick={()=>setOpen(true)}>{chat?'마피아 채팅 열기':'공동 습격 열기'} <b data-testid="mafia-chat-unread">{chat?.unreadCount??0}</b></button><div hidden={!open} className="mafia-overlay" data-testid="mafia-team-panel" role="dialog" aria-modal={open?'true':undefined} aria-label="마피아 비밀 채팅"><div className="mafia-overlay-header"><h2>마피아 비밀 채팅</h2><button onClick={()=>setOpen(false)}>마피아 채팅 닫기</button></div><p>작성자와 동료의 실제 신원은 공개되지 않습니다.</p><p>전체 생존자: {m.alive.map(name).join(' · ')}</p><>{chat&&<MafiaChat chat={chat} roundId={m.id} online={online} remaining={remaining} visible={open} name={name} call={call}/>}</>{m.ownRole?.team==='mafia'&&<section data-testid="mafia-attack"><h3>밤 공동 공격 {m.attack?.locked?'· 🔒 공동 공격 확정':'· 공동 공격 합의 중'}</h3>{m.phase!=='NIGHT'&&<p>낮에는 채팅만 이용할 수 있습니다. 처형 투표는 기본 화면에서 진행하세요.</p>}{m.attack&&<><p>미선택 {m.attack.unselectedCount}명 · 전원 합의 후 변경 불가</p>{m.attack.reason==='firstNight'&&<p>첫째 밤에는 습격할 수 없습니다. 정보를 수집하고 다음 낮을 준비하세요.</p>}{m.attack.reason==='cooldown'&&<p>습격 재사용 대기 · 다음 밤부터 다시 습격할 수 있습니다.</p>}{m.attack.locked&&<p>{name(m.attack.targetId)} · 공동 공격 확정</p>}</>}<div className="vote-grid">{enemies.map((id:string)=><button key={id} data-target-id={m.phase==='NIGHT'?id:undefined} data-attack-target-id={id} disabled={!online||busy||m.phase!=='NIGHT'||remaining<=0||m.attack?.locked||!m.attack?.available} aria-pressed={m.selectedTargetId===id} onClick={()=>void attack(id)}>{name(id)}{m.attack?.counts[id]!==undefined?` · ${m.attack.counts[id]}표`:''}</button>)}</div></section>}{error&&<p role="alert">{error}</p>}</div></section>;
+ const hasAttack=m.ownRole?.team==='mafia'&&!!m.attack;
+ const title=chat&&hasAttack?'마피아 습격 투표 · 채팅방':chat?'마피아 비밀 채팅':'마피아 습격 투표';
+ const attackPanel=m.ownRole?.team==='mafia'&&<section className="mafia-raid" data-testid="mafia-attack">
+  <h3>🌙 습격 대상 투표</h3>
+  {m.phase!=='NIGHT'&&<p>낮에는 채팅만 이용할 수 있습니다. 처형 투표는 기본 화면에서 진행하세요.</p>}
+  {m.attack&&<><p className="mafia-raid-status">{m.attack.locked?'🔒 공동 공격 확정':`미선택 ${m.attack.unselectedCount}명 · 공동 공격 합의 중`}</p><p>마피아 전원이 같은 대상을 선택하면 습격 확정 · 확정 후 변경 불가</p>
+   {m.attack.reason==='firstNight'&&<p>첫째 밤에는 습격할 수 없습니다. 정보를 수집하고 다음 낮을 준비하세요.</p>}
+   {m.attack.reason==='cooldown'&&<p>습격 재사용 대기 · 다음 밤부터 다시 습격할 수 있습니다.</p>}
+   {m.attack.locked&&<p>{name(m.attack.targetId)} · 공동 공격 확정</p>}</>}
+  <div className="vote-grid">{enemies.map((id:string)=><button key={id} data-target-id={m.phase==='NIGHT'?id:undefined} data-attack-target-id={id} disabled={!online||busy||m.phase!=='NIGHT'||remaining<=0||m.attack?.locked||!m.attack?.available} aria-pressed={m.selectedTargetId===id} onClick={()=>void attack(id)}>{name(id)}{m.attack?.counts[id]!==undefined?` · ${m.attack.counts[id]}표`:''}</button>)}</div>
+ </section>;
+ return <section className="mafia-team-launch"><button className={hasAttack?'mafia-raid-entry':undefined} aria-haspopup="dialog" aria-expanded={open} onClick={()=>setOpen(true)}>{hasAttack?title+' 열기':'마피아 채팅 열기'} <b data-testid="mafia-chat-unread">{chat?.unreadCount??0}</b></button>
+  <div hidden={!open} className="mafia-overlay mafia-team-panel" data-testid="mafia-team-panel" role="dialog" aria-modal={open?'true':undefined} aria-label={title}>
+   <div className="mafia-overlay-header"><h2>{title}</h2><button onClick={()=>setOpen(false)}>닫기</button></div>
+   <p className="mafia-team-privacy">작성자와 동료의 실제 신원은 공개되지 않습니다.</p>
+   {hasAttack&&attackPanel}
+   {chat&&<MafiaChat chat={chat} roundId={m.id} online={online} remaining={remaining} visible={open} name={name} call={call}/>}
+   {!hasAttack&&attackPanel}
+   <p>전체 생존자: {m.alive.map(name).join(' · ')}</p>
+   {error&&<p role="alert">{error}</p>}
+  </div>
+ </section>;
 }

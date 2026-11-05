@@ -1,10 +1,10 @@
 import {randomInt,randomUUID} from 'node:crypto';
 import type {MafiaState} from './engine';import type {Execution} from './civic';import {roles,type Team} from './roles';
-export type NeutralRole='jester'|'bountyHunter'|'agitator'|'prophet'|'swindler'|'parasite'|'gambler'|'bomber';
+export type NeutralRole='jester'|'bountyHunter'|'agitator'|'prophet'|'swindler'|'parasite'|'gambler'|'bomber'|'revenant';
 export type NeutralObjective=Readonly<{id:string;gameSessionId:string;ownerId:string;roleId:NeutralRole;targetId?:string;assignedAt:number}>;
 export type WinResult=Readonly<{gameSessionId:string;team:Team;playerIds:readonly string[];reason:string;day:number;at:number;roleId?:NeutralRole;executionId?:string}>;
-export const neutralQuotes:Record<NeutralRole,string>={bomber:'나를 처형하고 싶어? 좋아. 대신 내 표적도 나한테 투표해야 해.',swindler:'네가 누군지 다 알아. 두 명만 맞히면 이 게임은 내 거야.',parasite:'내가 직접 죽일 필요는 없어. 네가 죽기만 기다리면 되거든.',gambler:'난 나한테 투표할 거야. 근데 죽는 건 네가 될걸?',jester:'나 좀 죽여봐. 그럼 내가 이기는 거거든?',bountyHunter:'내가 원하는 건 딱 하나야. 네가 공개 처형되는 것.',agitator:'내가 직접 죽일 필요도 없어. 너희가 대신 투표해 주면 되거든.',prophet:'네가 죽을 운명인 건 알아. 하지만 내 표는 주지 않을 거야.'};
-export const neutralWinMessages:Record<NeutralRole,string>={bomber:'폭탄 표적의 표로 실제 처형되어 혼자 승리했습니다.',swindler:'서로 다른 두 사람의 정확한 직업을 맞혀 혼자 승리했습니다.',parasite:'두 표적의 사망을 지켜보고 끝까지 살아남았습니다.',gambler:'서로 다른 두 낮의 도박을 성공시켰습니다.',jester:'모두가 속았습니다. 처형당하는 순간 혼자 승리했습니다.',bountyHunter:'표적의 공개 처형을 지켜보고 현상금을 독차지했습니다.',agitator:'다른 참가자들의 표로 운명을 바꾸고 혼자 승리했습니다.',prophet:'표적에게 표를 던지지 않고 예언을 완성했습니다.'};
+export const neutralQuotes:Record<NeutralRole,string>={revenant:'날 죽인 놈들 중에 마피아가 있다고? 마지막으로 한 놈만 데려가마.',bomber:'나를 처형하고 싶어? 좋아. 대신 내 표적도 나한테 투표해야 해.',swindler:'네가 누군지 다 알아. 두 명만 맞히면 이 게임은 내 거야.',parasite:'내가 직접 죽일 필요는 없어. 네가 죽기만 기다리면 되거든.',gambler:'난 나한테 투표할 거야. 근데 죽는 건 네가 될걸?',jester:'나 좀 죽여봐. 그럼 내가 이기는 거거든?',bountyHunter:'내가 원하는 건 딱 하나야. 네가 공개 처형되는 것.',agitator:'내가 직접 죽일 필요도 없어. 너희가 대신 투표해 주면 되거든.',prophet:'네가 죽을 운명인 건 알아. 하지만 내 표는 주지 않을 거야.'};
+export const neutralWinMessages:Record<NeutralRole,string>={revenant:'자신에게 투표한 마피아를 맞혀 혼자 승리했습니다.',bomber:'폭탄 표적의 표로 실제 처형되어 혼자 승리했습니다.',swindler:'서로 다른 두 사람의 정확한 직업을 맞혀 혼자 승리했습니다.',parasite:'두 표적의 사망을 지켜보고 끝까지 살아남았습니다.',gambler:'서로 다른 두 낮의 도박을 성공시켰습니다.',jester:'모두가 속았습니다. 처형당하는 순간 혼자 승리했습니다.',bountyHunter:'표적의 공개 처형을 지켜보고 현상금을 독차지했습니다.',agitator:'다른 참가자들의 표로 운명을 바꾸고 혼자 승리했습니다.',prophet:'표적에게 표를 던지지 않고 예언을 완성했습니다.'};
 export const isNeutralRole=(id:string):id is NeutralRole=>Object.hasOwn(neutralQuotes,id);
 export function assignNeutralObjectives(m:Pick<MafiaState,'id'|'ids'|'roleById'>,now=Date.now()):readonly NeutralObjective[]{
  const owners=m.ids.filter(id=>roles[m.roleById[id]].team==='neutral');if(owners.length>1)throw Error('중립은 최대 1명입니다.');
@@ -25,6 +25,6 @@ export function evaluateNeutralExecution(m:MafiaState,e:Readonly<Execution>,now:
  return Object.freeze({gameSessionId:m.id,team:'neutral',playerIds:Object.freeze([goal.ownerId]),reason:goal.roleId,roleId:goal.roleId,executionId:e.id,day:m.day,at:now});}
 }
 export function neutralView(m:MafiaState,id:string){const goal=m.neutralObjectives.find(g=>g.ownerId===id);if(!goal)return undefined;const won=m.winResult?.team==='neutral'&&m.winResult.playerIds.includes(id),targetAlive=goal.targetId?m.alive.includes(goal.targetId):undefined;
- return{roleId:goal.roleId,quote:neutralQuotes[goal.roleId],description:roles[goal.roleId].description,targetId:goal.targetId,targetAlive,alive:m.alive.includes(id),voteTargetId:m.votes[id],status:won?'won':m.phase==='GAME_END'?'failed':!m.alive.includes(id)||targetAlive===false?'unreachable':'pending'};
+ return{roleId:goal.roleId,quote:neutralQuotes[goal.roleId],description:roles[goal.roleId].description,targetId:goal.targetId,targetAlive,alive:m.alive.includes(id),voteTargetId:m.votes[id],status:won?'won':m.revengePending?.revenge?.ownerId===id?'pending':m.phase==='GAME_END'?'failed':!m.alive.includes(id)||targetAlive===false?'unreachable':'pending'};
 }
 export function publicNeutralObjectives(m:MafiaState){return m.phase==='GAME_END'?m.neutralObjectives.map(g=>({ownerId:g.ownerId,roleId:g.roleId,targetId:g.targetId})):undefined;}

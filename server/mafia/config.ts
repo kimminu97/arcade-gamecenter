@@ -1,6 +1,6 @@
 import {normalizeMafiaRules,type MafiaRules} from './raid';
 import {randomInt} from 'node:crypto';
-import {roles,getRole,roleSetups,compositionValidators,type RoleId,type Team} from './roles';
+import {roles,getRole,legacyRoleReplacement,roleSetups,compositionValidators,type RoleId,type Team} from './roles';
 export type ConfigTeam='mafia'|'citizen'|'neutral';
 export type MafiaConfig={rules?:MafiaRules;version:1;mode:'direct'|'teamRandom';playerCount:number;direct:Record<string,number>;teams:Record<ConfigTeam,number>;candidates:Record<ConfigTeam,string[]>};
 export type MafiaSetupState={revision:number;config:MafiaConfig;presetId?:string};
@@ -13,9 +13,9 @@ export function defaultMafiaConfig(n:number):MafiaConfig{const count=roleSetups[
 export function normalizeMafiaConfig(input:any):MafiaConfig{
  if(!input||typeof input!=='object'||input.version!==1||!['direct','teamRandom'].includes(input.mode)||!Number.isInteger(input.playerCount)||input.playerCount<5||input.playerCount>7)throw Error('직업 설정 형식·버전·기준 인원(5~7명)을 확인하세요.');
  const direct:Record<string,number>=Object.create(null);if(!input.direct||typeof input.direct!=='object'||Array.isArray(input.direct)||Object.keys(input.direct).length>30)throw Error('직업별 인원 설정을 확인하세요.');
- for(const [id,n] of Object.entries(input.direct)){if(id.length>64||!Number.isInteger(n)||Number(n)<0||Number(n)>7)throw Error('직업 인원은 0~7 정수입니다.');direct[id]=Number(n);}
+ for(const [id,n] of Object.entries(input.direct)){if(id.length>64||!Number.isInteger(n)||Number(n)<0||Number(n)>7)throw Error('직업 인원은 0~7 정수입니다.');const key=Object.hasOwn(legacyRoleReplacement,id)?legacyRoleReplacement[id]:id;direct[key]=(direct[key]||0)+Number(n);}
  const fixed={} as Record<ConfigTeam,number>,candidates={} as Record<ConfigTeam,string[]>;
- for(const team of teams){const n=input.teams?.[team],pool=input.candidates?.[team];if(!Number.isInteger(n)||n<0||n>7||!Array.isArray(pool)||pool.length>25||pool.some(id=>typeof id!=='string'||id.length>64))throw Error('진영별 인원과 후보 목록을 확인하세요.');fixed[team]=n;candidates[team]=[...pool];}
+ for(const team of teams){const n=input.teams?.[team],pool=input.candidates?.[team];if(!Number.isInteger(n)||n<0||n>7||!Array.isArray(pool)||pool.length>25||pool.some(id=>typeof id!=='string'||id.length>64))throw Error('진영별 인원과 후보 목록을 확인하세요.');fixed[team]=n;candidates[team]=pool.map((id:string)=>Object.hasOwn(legacyRoleReplacement,id)?legacyRoleReplacement[id]:id);}
  return{rules:normalizeMafiaRules(input.rules),version:1,mode:input.mode,playerCount:input.playerCount,direct,teams:input.mode==='direct'?totals(Object.entries(direct).flatMap(([id,k])=>Array<RoleId>(k).fill(id as RoleId))):fixed,candidates};
 }
 function totals(slots:RoleId[]){const counts:Record<ConfigTeam,number>={mafia:0,citizen:0,neutral:0};for(const id of slots){const role=getRole(id);if(role)counts[configTeam(role.team)]++;}return counts;}

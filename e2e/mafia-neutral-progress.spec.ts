@@ -4,7 +4,7 @@ for(const [kind,label,n] of [['swindler','사기꾼',5],['parasite','기생충',
  const contexts:BrowserContext[]=[],players:Page[]=[],states=new Map<Page,any>();
  const page=async(phone=false)=>{const c=await browser.newContext({viewport:phone?{width:390,height:844}:{width:1366,height:768}});contexts.push(c);const p=await c.newPage();p.on('dialog',d=>d.accept());p.on('websocket',ws=>ws.on('framereceived',({payload})=>{const raw=String(payload);if(raw.startsWith('42['))try{const[e,s]=JSON.parse(raw.slice(2));if(e==='state')states.set(p,s);}catch{}}));return p;};
  try{
- const h=await page();await h.goto('http://127.0.0.1:3101');await h.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-role','host');const code=await h.getByTestId('arcade').getAttribute('data-room-code');
+ const h=await page();await h.goto('http://127.0.0.1:3101');await expect(h.getByText('● 실시간 연결',{exact:true})).toBeVisible({timeout:30000});await h.getByRole('button',{name:'✦ 방 만들기 · 진행자',exact:true}).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-role','host');await expect(h.getByTestId('arcade')).toHaveAttribute('data-room-code',/^[0-9A-F]{6}$/);const code=await h.getByTestId('arcade').getAttribute('data-room-code');
  for(let i=0;i<n;i++){const p=await page(true);players.push(p);await p.goto('http://127.0.0.1:3101/?room='+code);await p.getByPlaceholder('오늘의 게임 닉네임').fill('누적친구'+i);await p.getByRole('button',{name:'게임 참가하기 →',exact:true}).click();await expect(p.getByTestId('arcade')).toHaveAttribute('data-role','player');}
  await h.locator('.game-select').getByRole('button',{name:'🌙 정보전 마피아',exact:true}).click();
  const change=async(name:string,key:string,delta:number)=>{const before=states.get(h).mafiaSetup.config.direct[key]||0;await h.getByRole('button',{name:name+(delta>0?' 추가':' 제거'),exact:true}).click();await expect.poll(()=>states.get(h).mafiaSetup.config.direct[key]||0).toBe(before+delta);};
@@ -18,7 +18,7 @@ for(const [kind,label,n] of [['swindler','사기꾼',5],['parasite','기생충',
   await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','NIGHT');await expect(neutral.getByTestId('mafia-neutral-ability')).toBeVisible();
   if(kind!=='gambler'){
    await neutral.getByLabel('중립 능력 대상',{exact:true}).selectOption(targetIds[day-1]);
-   if(kind==='swindler'){const select=neutral.getByLabel('추측 직업',{exact:true});await expect(select.locator('option')).toHaveCount(26);expect(own(neutral).neutralAbility.roleOptions).toHaveLength(25);expect(own(neutral).neutralAbility.roleOptions.some((r:any)=>r.roleId==='bomber')).toBe(true);await select.selectOption('citizen');}
+   if(kind==='swindler'){const select=neutral.getByLabel('추측 직업',{exact:true});await expect(select.locator('option')).toHaveCount(27);expect(own(neutral).neutralAbility.roleOptions).toHaveLength(26);expect(own(neutral).neutralAbility.roleOptions.some((r:any)=>r.roleId==='bomber')).toBe(true);await select.selectOption('citizen');}
    if(day===1)await neutral.getByTestId('mafia-neutral-ability').screenshot({path:info.outputPath(kind+'-phone.png')});
    await neutral.getByRole('button',{name:kind==='swindler'?'추측 확정':'표식 확정',exact:true}).click();await expect.poll(()=>own(neutral).neutralAbility.remaining).toBe((kind==='swindler'?3:2)-day);await expect(neutral.getByLabel('중립 능력 대상',{exact:true})).toHaveCount(0);if(kind==='swindler')expect(own(neutral).neutralAbility.guesses.at(-1).correct).toBeUndefined();
   }

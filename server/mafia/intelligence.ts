@@ -7,7 +7,7 @@ export type ActionCategory='investigation'|'protection'|'attack'|'report'|'commu
 export type ActionRecord={id:string;gameSessionId:string;nightId:string;nightNumber:number;actorPlayerId:string;actionCategory:ActionCategory;actionType:string;targetPlayerId?:string;actionStatus:'confirmed';occurredAt:number;finalizedAt:number};
 export type Survey={id:string;gameSessionId:string;ownerId:string;roleId:SurveyRole;targetId:string;nightId:string;day:number;requestId:string;at:number};
 export type SurveyResult={id:string;ownerId:string;targetId:string;day:number;sourceDay:number;kind:SurveyRole;categories:ActionCategory[];communicated:boolean};
-export type NightAudit={gameSessionId:string;nightId:string;day:number;finalizedAt:number;records:ActionRecord[];results:SurveyResult[]};
+export type NightAudit={citizen?:import('./citizen-rework').CitizenState;gameSessionId:string;nightId:string;day:number;finalizedAt:number;records:ActionRecord[];results:SurveyResult[]};
 export type IntelligenceState={surveys:Survey[];snapshots:Record<number,NightAudit>};
 export const emptyIntelligence=():IntelligenceState=>({surveys:[],snapshots:{}});
 const isSurvey=(role:string):role is SurveyRole=>['informant','wiretapper','archivist'].includes(role);

@@ -17,9 +17,9 @@ export function captureNight(m:MafiaState,now:number):NightReceipt{
  for(const [actor,target] of Object.entries(m.actions)){const role=ids.includes(actor)?roles[m.roleById[actor]]:undefined;if(!role||role.availablePhase!=='NIGHT'||!validAbilityTarget(role.abilityType,actor,target,ids)){rejectedActions++;continue;}actions[actor]=target;}
  const actors=attackMembers(ids,m.roleById),target=m.attack.targetId;
  const validAttack=raidStatus(m).available&&m.attack.locked&&!!target&&ids.includes(target)&&actors.length>0&&actors.every(id=>m.attack.selections[id]===target);
- const captured:NightContext={ids,roleById:{...m.roleById},actions,guardTargets:m.civic.actions.filter(a=>a.roleId==='bodyguard'&&a.nightId===m.nightId&&ids.includes(a.ownerId)&&ids.includes(a.targetId)&&a.ownerId!==a.targetId).map(a=>a.targetId),attackTarget:validAttack?target:undefined};
+ const captured:NightContext={shieldTargets:m.citizen.shields.filter(s=>s.status==='active'&&ids.includes(s.targetId)).map(s=>s.targetId),ids,roleById:{...m.roleById},actions,guardTargets:m.civic.actions.filter(a=>a.roleId==='bodyguard'&&a.nightId===m.nightId&&ids.includes(a.ownerId)&&ids.includes(a.targetId)&&a.ownerId!==a.targetId).map(a=>a.targetId),attackTarget:validAttack?target:undefined};
  const outcome=resolveNight(captured,m.day);for(const entry of outcome.investigations){Object.freeze(entry.report);Object.freeze(entry);}Object.freeze(outcome.deaths);Object.freeze(outcome.investigations);Object.freeze(outcome);
  // Keep the receipt independent of later submissions, reconnects, or mutable round maps.
- Object.freeze(captured.guardTargets);Object.freeze(captured.ids);Object.freeze(captured.roleById);Object.freeze(captured.actions);Object.freeze(captured);
+ Object.freeze(captured.shieldTargets);Object.freeze(captured.guardTargets);Object.freeze(captured.ids);Object.freeze(captured.roleById);Object.freeze(captured.actions);Object.freeze(captured);
  return{nightId:m.nightId,day:m.day,resolvedAt:now,captured,outcome,rejectedActions};
 }

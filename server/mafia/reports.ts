@@ -1,3 +1,4 @@
+import type {CitizenState} from './citizen-rework';
 import type {NeutralAction,NeutralProgress} from './neutral-progress';
 import type {NeutralObjective,WinResult} from './neutral';
 import type {Infiltration} from './infiltration';
@@ -14,7 +15,7 @@ import type {MafiaState} from './engine';
 export type AnonymousReport={reportId:string;gameSessionId:string;nightId:string;nightNumber:number;senderPlayerId:string;requestId:string;originalText:string;receptionOrder:number;receptionTime:number;deliveryStatus:'received'|'delivered'|'noRecipient'|'held'|'intercepted';recipientId:string|null;deliveredToJournalistAt:number|null;selectedForPublication:boolean;sourceType?:'normal'|'hacker';sourceReportId?:string;interceptedBy?:string};
 export type NewsArticle={articleId:string;gameSessionId:string;reportId:string;journalistId:string;sourceType?:'journalist'|'hacker'|'fake';sourceReportId?:string;requestId:string;originalText:string;publicationNight:string;publicationDay:number;publicationOrder:number;publicationStatus:'reserved'|'published';reservedAt:number;publishedAt:number|null};
 export type ReportState={records:AnonymousReport[];articles:NewsArticle[]};
-export interface ReportStore {neutralAction?:(a:NeutralAction,p:NeutralProgress)=>void;infiltrate?:(x:Infiltration)=>void;rules?:(gameId:string,rules:Readonly<MafiaRules>,goals?:readonly NeutralObjective[])=>void;civic?:(a:CivicAction)=>void;post?:(m:PrivateMessage)=>void;execution?:(e:Execution,a?:CivicAction,win?:WinResult,progress?:NeutralProgress)=>void;receive:(report:AnonymousReport,decideDelivery:()=>ReceiptEffects|void)=>void;reserve:(article:NewsArticle)=>void;publish:(articles:NewsArticle[],now:number,results?:ListeningReservation[],audit?:NightAudit,civicResults?:CivicResult[],raid?:RaidRecord,infiltrations?:Infiltration[],win?:WinResult,deaths?:string[],progress?:NeutralProgress)=>void;sendThreat?:(message:PrivateMessage)=>void;reserveListening?:(tap:ListeningReservation)=>void;acquire?:(copy:CopiedReport)=>void;readMessages?:(gameId:string,id:string,ids:string[],at:number)=>void;saveChat?:(message:MafiaChatMessage)=>void;readChat?:(gameId:string,id:string,seq:number)=>void;survey?:(survey:Survey)=>void;forward?:(report:AnonymousReport)=>void;reserveFake?:(article:NewsArticle)=>void;}
+export interface ReportStore {citizen?:(state:CitizenState)=>void;neutralAction?:(a:NeutralAction,p:NeutralProgress)=>void;infiltrate?:(x:Infiltration)=>void;rules?:(gameId:string,rules:Readonly<MafiaRules>,goals?:readonly NeutralObjective[],citizen?:CitizenState)=>void;civic?:(a:CivicAction)=>void;post?:(m:PrivateMessage)=>void;execution?:(e:Execution,a?:CivicAction,win?:WinResult,progress?:NeutralProgress,citizen?:CitizenState)=>void;receive:(report:AnonymousReport,decideDelivery:()=>ReceiptEffects|void)=>void;reserve:(article:NewsArticle)=>void;publish:(articles:NewsArticle[],now:number,results?:ListeningReservation[],audit?:NightAudit,civicResults?:CivicResult[],raid?:RaidRecord,infiltrations?:Infiltration[],win?:WinResult,deaths?:string[],progress?:NeutralProgress)=>void;sendThreat?:(message:PrivateMessage)=>void;reserveListening?:(tap:ListeningReservation)=>void;acquire?:(copy:CopiedReport)=>void;readMessages?:(gameId:string,id:string,ids:string[],at:number)=>void;saveChat?:(message:MafiaChatMessage)=>void;readChat?:(gameId:string,id:string,seq:number)=>void;survey?:(survey:Survey)=>void;forward?:(report:AnonymousReport)=>void;reserveFake?:(article:NewsArticle)=>void;}
 let store:ReportStore|undefined;
 export function configureMafiaReports(value?:ReportStore){store=value;}
 export const createReportState=():ReportState=>({records:[],articles:[]});
@@ -63,9 +64,9 @@ export function reserveNewsArticle(m:MafiaState,id:string,a:any,now=Date.now()){
  store?.reserve(article);m.anonymousReports.articles.push(article);report.selectedForPublication=true;
  return{duplicate:false};
 }
-export function publishReservedNews(m:MafiaState,now:number,civicResults:CivicResult[]=[],raidSuccess=false,win?:WinResult,deaths:string[]=[],progress?:NeutralProgress){
+export function publishReservedNews(m:MafiaState,now:number,civicResults:CivicResult[]=[],raidSuccess=false,win?:WinResult,deaths:string[]=[],progress?:NeutralProgress,citizen?:CitizenState){
  const pending=m.anonymousReports.articles.filter(x=>x.publicationNight===m.nightId&&x.publicationStatus==='reserved');
- const results=listeningResults(m,now),audit=planNightAudit(m,now);store?.publish(pending,now,results,audit,civicResults,{gameSessionId:m.id,nightId:m.nightId,day:m.day,success:raidSuccess,blockedNextDay:raidSuccess&&m.rules.raidCooldown?m.day+1:0},m.infiltrations.filter(x=>x.nightId===m.nightId),win,deaths,progress);m.civic.results.push(...civicResults);applyListeningResults(m,results);m.intelligence.snapshots[m.day]=audit;
+ const results=listeningResults(m,now),audit={...planNightAudit(m,now),citizen};store?.publish(pending,now,results,audit,civicResults,{gameSessionId:m.id,nightId:m.nightId,day:m.day,success:raidSuccess,blockedNextDay:raidSuccess&&m.rules.raidCooldown?m.day+1:0},m.infiltrations.filter(x=>x.nightId===m.nightId),win,deaths,progress);m.civic.results.push(...civicResults);applyListeningResults(m,results);m.intelligence.snapshots[m.day]=audit;
  for(const article of pending){article.publicationStatus='published';article.publishedAt=now;}
 }
 export function anonymousReportView(m:MafiaState,id:string){
@@ -93,9 +94,11 @@ export function persistSurvey(survey:Survey){if(store){if(!store.survey)throw Er
 
 export function persistCivic(a:CivicAction){if(store){if(!store.civic)throw Error('직업 저장소 업데이트가 필요합니다.');store.civic(a);}}
 export function persistPost(m:PrivateMessage){if(store){if(!store.post)throw Error('메시지 저장소 업데이트가 필요합니다.');store.post(m);}}
-export function persistExecution(e:Execution,a?:CivicAction,win?:WinResult,progress?:NeutralProgress){if(store){if(!store.execution)throw Error('처형 저장소 업데이트가 필요합니다.');store.execution(e,a,win,progress);}}
+export function persistExecution(e:Execution,a?:CivicAction,win?:WinResult,progress?:NeutralProgress,citizen?:CitizenState){if(store){if(!store.execution)throw Error('처형 저장소 업데이트가 필요합니다.');store.execution(e,a,win,progress,citizen);}}
 
 export function persistInfiltration(x:Infiltration){if(store){if(!store.infiltrate)throw Error('저장소 업데이트가 필요합니다.');store.infiltrate(x);}}
-export function persistRules(id:string,rules:Readonly<MafiaRules>,goals:readonly NeutralObjective[]=[]){store?.rules?.(id,rules,goals);}
+export function persistRules(id:string,rules:Readonly<MafiaRules>,goals:readonly NeutralObjective[]=[],citizen?:CitizenState){store?.rules?.(id,rules,goals,citizen);}
 
 export function persistNeutralAction(a:NeutralAction,p:NeutralProgress){if(store){if(!store.neutralAction)throw Error('중립 저장소 업데이트가 필요합니다.');store.neutralAction(a,p);}}
+
+export function persistCitizen(state:CitizenState){if(store){if(!store.citizen)throw Error("시민 능력 저장소 업데이트가 필요합니다.");store.citizen(state);}}

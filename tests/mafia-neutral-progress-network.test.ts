@@ -20,7 +20,7 @@ for(const n of [5,6,7])for(const kind of ['swindler','parasite','gambler'])test(
   while(m().phase!=='NIGHT')await next();const a={type:'mafia:neutral:action',roundId:m().id,nightId:m().nightId,requestId:randomUUID(),targetId:id(targets[day-1]),...(kind==='swindler'?{guessedRoleId:'citizen'}:{})};
   if(kind!=='gambler'){
    assert.equal((await act(h,{...a,playerId:ownerId})).ok,false);assert.equal((await act(targets[0],{...a,playerId:ownerId})).ok,false);
-   if(kind==='swindler'){assert.equal(own(owner).neutralAbility.roleOptions.length,25);assert.ok(own(owner).neutralAbility.roleOptions.some((r:any)=>r.roleId==='bomber'));assert.equal((await act(owner,{...a,guessedRoleId:'revenant'})).ok,false);}
+   if(kind==='swindler'){assert.equal(own(owner).neutralAbility.roleOptions.length,26);assert.ok(own(owner).neutralAbility.roleOptions.some((r:any)=>r.roleId==='bomber'));assert.equal((await act(owner,{...a,guessedRoleId:'futureRole'})).ok,false);}
    assert.ok((await act(owner,{...a,correct:true,successes:999})).ok);await wait(()=>own(owner).neutralAbility.remaining===(kind==='swindler'?3:2)-day);assert.equal((await act(owner,a)).duplicate,true);
    assert.equal((await act(owner,{...a,requestId:randomUUID(),targetId:ownerId})).ok,false);
    if(kind==='swindler')assert.equal(own(owner).neutralAbility.guesses.at(-1).correct,undefined);

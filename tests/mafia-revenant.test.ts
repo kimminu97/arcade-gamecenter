@@ -18,6 +18,17 @@ function until(m:MafiaState,phase:string){for(let i=0;i<15&&m.phase!==phase;i++)
 function ballot(m:MafiaState,votes:Record<string,string>){until(m,'DAY_VOTE');m.votes={...votes};next(m);}
 function execute(m:MafiaState,votes=Object.fromEntries(m.alive.map(i=>[i,owner(m)]))){ballot(m,votes);next(m);}
 const guess=(m:MafiaState,targetId:string,id=owner(m),overrides:any={})=>submitRevenge(m,id,{roundId:m.id,executionId:m.revengePending!.id,requestId:randomUUID(),targetId,...overrides},m.revengePending!.revenge!.endsAt-1);
+test('최종 공개: 5인 진행 중 밤 사망은 비공개, 종료 뒤 신/구 ID 혼동 없이 전원 실제 직업·진영',()=>{
+ const m=createMafia(['p0','p1','p2','p3','p4'],300,{...defaultMafiaConfig(5),direct:{mafia:1,voteBlocker:1,voteAppraiser:1,shieldMaker:1,citizen:1}}),assigned=Object.fromEntries(m.ids.map(id=>[id,roles[m.roleById[id]]]));
+ const hidden=()=>{for(const id of['',...m.ids]){const v=mafiaView(m,id);assert.equal(v.revealedRoles,undefined);assert.equal((v as any).roleById,undefined);assert.equal((v as any).votes,undefined);}};
+ hidden();until(m,'NIGHT');next(m);until(m,'NIGHT');const target=m.ids.find(id=>m.roleById[id]==='citizen')!,attacker=m.ids.find(id=>m.roleById[id]==='mafia')!;submitMafia(m,attacker,{roundId:m.id,version:m.version,nightId:m.nightId,revision:0,targetId:target});next(m);assert.equal(m.phase,'DAY_ANNOUNCEMENT');assert.ok(!m.alive.includes(target));hidden();
+ ballot(m,Object.fromEntries(m.alive.map(id=>[id,attacker])));hidden();next(m);assert.equal(m.winner,'town');assert.ok(!m.alive.includes(attacker));for(const id of['',...m.ids])assert.deepEqual(mafiaView(m,id).revealedRoles,assigned);assert.equal(Object.keys(mafiaView(m,'').revealedRoles!).length,5);assert.equal(Object.values(assigned).some(r=>['informant','archivist','wiretapper'].includes(r.roleId)),false);
+});
+test('최종 공개: 복수귀 사망·15초 대기의 개인/Host 뷰에는 없고 중립 승리 확정 뒤에만 공개',()=>{
+ const m=fixture(5),assigned=Object.fromEntries(m.ids.map(id=>[id,roles[m.roleById[id]]]));until(m,'NIGHT');sendMafiaChat(m,enemy(m),{roundId:m.id,chatId:m.id,messageId:randomUUID(),text:'final-reveal-private-chat-marker'});execute(m);assert.equal(m.phase,'REVENGE_PENDING');assert.ok(!m.alive.includes(owner(m)));
+ for(const id of['',...m.ids]){assert.equal(mafiaView(m,id).revealedRoles,undefined);}
+ guess(m,enemy(m));assert.equal(m.winner,'neutral');for(const id of['',...m.ids]){const v=mafiaView(m,id);assert.deepEqual(v.revealedRoles,assigned);assert.equal(v.chat,undefined);assert.equal((v as any).secretLog,undefined);assert.equal((v as any).privateChats,undefined);assert.ok(!JSON.stringify(v).includes('final-reveal-private-chat-marker'));}
+});
 test('모든 직업 활성화 후에도 예정 직업 배정 차단 검증 유지',()=>{const previous=roles.revenant.implementationStatus;try{roles.revenant.implementationStatus='planned';assert.throws(()=>fixture());assert.throws(()=>drawMafiaSlots({...defaultMafiaConfig(5),mode:'teamRandom',teams:{mafia:1,citizen:3,neutral:1},candidates:{mafia:['mafia'],citizen:['citizen'],neutral:['revenant']}},5));}finally{roles.revenant.implementationStatus=previous;}});
 for(const n of [5,6,7])test(`${n}인 복수귀 직접·랜덤 배정, 사망 후 유효표 후보·비밀·단독 승리`,()=>{
  const cfg={...defaultMafiaConfig(n),mode:'teamRandom' as const,teams:{mafia:1,citizen:n-2,neutral:1},candidates:{mafia:['mafia'],citizen:['citizen'],neutral:['revenant']}};
@@ -61,5 +72,5 @@ test('SQLite v8 JSON: 대기/최종 원자 저장·재오픈·DB 실패 후 재�
  db.exec("CREATE TRIGGER FailWin BEFORE INSERT ON MafiaGameResult BEGIN SELECT RAISE(ABORT,'fail');END");assert.throws(()=>guess(m,enemy(m)));assert.equal(m.phase,'REVENGE_PENDING');assert.equal(m.revengePending!.revenge!.status,'pending');assert.equal(m.winner,undefined);db.exec('DROP TRIGGER FailWin');guess(m,enemy(m));
  assert.throws(()=>store.execution!(m.executions.at(-1)!));assert.equal((db.prepare('SELECT count(*) n FROM MafiaGameResult').get() as any).n,1);assert.equal((db.prepare('SELECT count(*) n FROM MafiaExecution').get() as any).n,1);
  }finally{db.close();store.close();configureMafiaReports();}
- const read=new DatabaseSync(path,{readOnly:true});try{assert.equal((read.prepare("SELECT value FROM MafiaReportMeta WHERE key='schemaVersion'").get() as any).value,'9');const e=JSON.parse((read.prepare('SELECT resultJson FROM MafiaExecution').get() as any).resultJson);assert.equal(e.revenge.correct,true);assert.equal(e.personalWinResult.roleId,'revenant');assert.ok(e.revenge.requestId);assert.equal(e.revenge.candidates.includes(e.revenge.targetId),true);}finally{read.close();}
+ const read=new DatabaseSync(path,{readOnly:true});try{assert.equal((read.prepare("SELECT value FROM MafiaReportMeta WHERE key='schemaVersion'").get() as any).value,'10');const e=JSON.parse((read.prepare('SELECT resultJson FROM MafiaExecution').get() as any).resultJson);assert.equal(e.revenge.correct,true);assert.equal(e.personalWinResult.roleId,'revenant');assert.ok(e.revenge.requestId);assert.equal(e.revenge.candidates.includes(e.revenge.targetId),true);}finally{read.close();}
 });

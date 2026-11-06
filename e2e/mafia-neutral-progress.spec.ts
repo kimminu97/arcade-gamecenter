@@ -25,7 +25,7 @@ for(const [kind,label,n] of [['swindler','사기꾼',5],['parasite','기생충',
   await neutral.reload();await expect(neutral.getByTestId('mafia-neutral-ability')).toBeVisible();await privacy();
   await h.getByRole('button',{name:'바로 낮으로',exact:true}).click();
   if(kind==='swindler'&&day===2)break;
-  await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','DAY_ANNOUNCEMENT');await h.getByRole('button',{name:'낮 토론 시작',exact:true}).click();await h.getByRole('button',{name:'처형 투표 시작',exact:true}).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','DAY_VOTE');
+  await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','DAY_DISCUSSION');await h.getByRole('button',{name:'처형 투표 시작',exact:true}).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','DAY_VOTE');
   const choose=async(p:Page,targetId:string)=>{await p.locator(`[data-target-id="${targetId}"]`).click();await expect.poll(()=>own(p).submitted).toBe(true);};
   if(kind==='gambler')await choose(neutral,id(neutral));
   if(kind!=='swindler')for(const p of players.filter(p=>p!==neutral&&m().alive.includes(id(p))).slice(0,2))await choose(p,targetIds[day-1]);

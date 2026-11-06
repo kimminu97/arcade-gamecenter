@@ -18,7 +18,7 @@ export const roles:Record<RoleId,RoleDefinition>={
  voteBlocker:role('voteBlocker','투표 봉쇄관','town','게임당 1회 낮 토론 중 자신 이외 생존자 한 명의 해당 낮 투표권을 봉쇄합니다.','voteBlock',1,'vote',true),
  shieldMaker:role('shieldMaker','방패 제작자','town','게임당 1회 밤에 다른 생존자에게 습격을 한 번 막는 방패를 지급합니다. 다른 보호가 우선하며 미사용 방패는 유지됩니다.','grantShield',1,'protection',true),
  judge:role('judge','판사','town','게임당 1회 낮 처형을 취소합니다.','cancelExecution',1,'vote',true),
- bodyguard:role('bodyguard','경호원','town','게임당 1회 습격을 보호하며 성공 시 공개 사건을 남깁니다. 자신은 보호할 수 없습니다.','bodyguard',1,'protection',true),
+ bodyguard:role('bodyguard','경호원','town','매일 밤 다른 생존자 한 명을 습격으로부터 보호하며 성공 시 공개 사건을 남깁니다. 자신은 보호할 수 없습니다.','bodyguard',null,'protection',true),
  coroner:role('coroner','검시관','town','사망자의 정확한 직업을 조사합니다.','autopsy',null,'investigation',true),
  postman:role('postman','우체부','town','게임당 2회 특정 참가자에게 비밀 메시지를 전달합니다.','privateMail',2,'information',true),
  voteAppraiser:role('voteAppraiser','투표 감정사','town','게임당 1회 낮 토론 중 다른 생존자를 지정해 투표 마감 후 최종 실제 투표 대상 또는 기권을 본인만 확인합니다.','voteAppraise',1,'information',true),

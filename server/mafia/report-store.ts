@@ -17,7 +17,7 @@ export function openMafiaReportStore(path:string):ReportStore&{close:()=>void}{
  mkdirSync(dirname(path),{recursive:true});const db=new DatabaseSync(path);
  // A SQLite-consistent backup includes committed WAL pages; never copy a live DB file alone.
  const prior=db.prepare("SELECT name FROM sqlite_master WHERE name='MafiaReportMeta'").get();
- if(prior){const v=(db.prepare("SELECT value FROM MafiaReportMeta WHERE key='schemaVersion'").get() as any)?.value;if(['1','2','3','4','5','6','7','8'].includes(v))db.prepare('VACUUM INTO ?').run(path+'.pre-v9-'+randomUUID()+'.sqlite');}
+ if(prior){const v=(db.prepare("SELECT value FROM MafiaReportMeta WHERE key='schemaVersion'").get() as any)?.value;if(['1','2','3','4','5','6','7','8'].includes(v))db.prepare('VACUUM INTO ?').run(path+'.pre-v9-'+randomUUID()+'.sqlite');else if(v==='9')db.prepare('VACUUM INTO ?').run(path+'.pre-v10-'+randomUUID()+'.sqlite');}
  db.exec(`PRAGMA journal_mode=WAL;PRAGMA busy_timeout=5000;PRAGMA foreign_keys=ON;
  BEGIN IMMEDIATE;
  CREATE TABLE IF NOT EXISTS MafiaReportMeta(key TEXT PRIMARY KEY,value TEXT NOT NULL);
@@ -35,7 +35,7 @@ export function openMafiaReportStore(path:string):ReportStore&{close:()=>void}{
  CREATE INDEX IF NOT EXISTS MafiaReportInbox ON MafiaAnonymousReport(gameSessionId,recipientId,deliveryStatus);
  `);
  const version=(db.prepare('SELECT value FROM MafiaReportMeta WHERE key=?').get('schemaVersion') as any)?.value;
- if(!['1','2','3','4','5','6','7','8','9'].includes(version)){db.exec('ROLLBACK');db.close();throw Error('지원하지 않는 마피아 제보 DB 버전입니다.');}
+ if(!['1','2','3','4','5','6','7','8','9','10'].includes(version)){db.exec('ROLLBACK');db.close();throw Error('지원하지 않는 마피아 제보 DB 버전입니다.');}
  try{
  db.exec(`CREATE TABLE IF NOT EXISTS MafiaForwardedReport(
  reportId TEXT PRIMARY KEY,sourceReportId TEXT NOT NULL UNIQUE REFERENCES MafiaAnonymousReport(reportId),gameSessionId TEXT NOT NULL,
@@ -63,14 +63,15 @@ export function openMafiaReportStore(path:string):ReportStore&{close:()=>void}{
  add('MafiaAnonymousReport','interceptedBy','TEXT');
  add('MafiaNewsArticle','forwardedReportId','TEXT REFERENCES MafiaForwardedReport(reportId)');
  add('MafiaNewsArticle','sourceType',"TEXT NOT NULL DEFAULT 'journalist'");
- if(!['5','6','7','8','9'].includes(version))db.exec(`CREATE TABLE MafiaPrivateMessageV5(
+ if(!['5','6','7','8','9','10'].includes(version))db.exec(`CREATE TABLE MafiaPrivateMessageV5(
  id TEXT PRIMARY KEY,gameSessionId TEXT NOT NULL,ownerId TEXT NOT NULL,copyId TEXT REFERENCES MafiaCopiedReport(id),recipientId TEXT NOT NULL,requestId TEXT NOT NULL,originalText TEXT NOT NULL,nightId TEXT NOT NULL,day INTEGER NOT NULL,createdAt INTEGER NOT NULL,readAt INTEGER,sourceRole TEXT NOT NULL DEFAULT 'blackmailer',sourceAbility TEXT NOT NULL DEFAULT 'threat',UNIQUE(gameSessionId,ownerId,requestId));
  INSERT INTO MafiaPrivateMessageV5 SELECT id,gameSessionId,ownerId,copyId,recipientId,requestId,originalText,nightId,day,createdAt,readAt,sourceRole,sourceAbility FROM MafiaPrivateMessage;
  DROP TABLE MafiaPrivateMessage;ALTER TABLE MafiaPrivateMessageV5 RENAME TO MafiaPrivateMessage;`);
  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneThreat ON MafiaPrivateMessage(gameSessionId,ownerId) WHERE sourceRole='blackmailer';
  CREATE UNIQUE INDEX IF NOT EXISTS MafiaOnePostPerNight ON MafiaPrivateMessage(gameSessionId,ownerId,nightId) WHERE sourceRole='postman';
  CREATE TABLE IF NOT EXISTS MafiaCivicAction(id TEXT PRIMARY KEY,gameSessionId TEXT NOT NULL,ownerId TEXT NOT NULL,roleId TEXT NOT NULL,targetId TEXT NOT NULL,nightId TEXT NOT NULL,day INTEGER NOT NULL,requestId TEXT NOT NULL,createdAt INTEGER NOT NULL,executionId TEXT,cancel INTEGER,UNIQUE(gameSessionId,ownerId,requestId));
- CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneGuard ON MafiaCivicAction(gameSessionId,ownerId) WHERE roleId='bodyguard';
+ DROP INDEX IF EXISTS MafiaOneGuard;
+ CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneGuardPerNight ON MafiaCivicAction(gameSessionId,ownerId,nightId) WHERE roleId='bodyguard';
  CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneAutopsy ON MafiaCivicAction(gameSessionId,ownerId,nightId) WHERE roleId='coroner';
  CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneJudgement ON MafiaCivicAction(gameSessionId,executionId) WHERE roleId='judge';
  CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneCancel ON MafiaCivicAction(gameSessionId,ownerId) WHERE roleId='judge' AND cancel=1;
@@ -83,7 +84,7 @@ export function openMafiaReportStore(path:string):ReportStore&{close:()=>void}{
  CREATE TABLE IF NOT EXISTS MafiaRaidOutcome(gameSessionId TEXT NOT NULL,nightId TEXT NOT NULL,day INTEGER NOT NULL,success INTEGER NOT NULL,blockedNextDay INTEGER NOT NULL,PRIMARY KEY(gameSessionId,nightId));
  CREATE TABLE IF NOT EXISTS MafiaInfiltration(id TEXT PRIMARY KEY,gameSessionId TEXT NOT NULL,ownerId TEXT NOT NULL,nightId TEXT NOT NULL,day INTEGER NOT NULL,requestId TEXT NOT NULL,startSeq INTEGER NOT NULL,createdAt INTEGER NOT NULL,endedAt INTEGER,UNIQUE(gameSessionId,ownerId,nightId),UNIQUE(gameSessionId,ownerId,requestId));
  CREATE TABLE IF NOT EXISTS MafiaExecution(id TEXT PRIMARY KEY,gameSessionId TEXT NOT NULL,day INTEGER NOT NULL,status TEXT NOT NULL,endsAt INTEGER NOT NULL,resultJson TEXT NOT NULL,UNIQUE(gameSessionId,day));`);
- db.exec("CREATE TABLE IF NOT EXISTS MafiaCitizenState(gameSessionId TEXT PRIMARY KEY,stateJson TEXT NOT NULL);CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneInterception ON MafiaAnonymousReport(gameSessionId,interceptedBy) WHERE interceptedBy IS NOT NULL;UPDATE MafiaReportMeta SET value='9' WHERE key='schemaVersion';COMMIT;");
+ db.exec("CREATE TABLE IF NOT EXISTS MafiaCitizenState(gameSessionId TEXT PRIMARY KEY,stateJson TEXT NOT NULL);CREATE UNIQUE INDEX IF NOT EXISTS MafiaOneInterception ON MafiaAnonymousReport(gameSessionId,interceptedBy) WHERE interceptedBy IS NOT NULL;UPDATE MafiaReportMeta SET value='10' WHERE key='schemaVersion';COMMIT;");
  }catch(e){db.exec('ROLLBACK');db.close();throw e;}
  const transaction=(fn:()=>void)=>{db.exec('BEGIN IMMEDIATE');try{fn();db.exec('COMMIT');}catch(e){db.exec('ROLLBACK');throw e;}};
  const saveCitizen=(state?:CitizenState)=>{if(state)db.prepare('INSERT INTO MafiaCitizenState VALUES(?,?) ON CONFLICT(gameSessionId) DO UPDATE SET stateJson=excluded.stateJson').run(state.gameSessionId,JSON.stringify(state));};

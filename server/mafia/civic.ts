@@ -15,7 +15,7 @@ export function submitCivic(m:MafiaState,id:string,a:any,now=Date.now()){
  if(role!=='bodyguard'&&role!=='coroner')throw Error('이 능력을 사용할 수 없습니다.');
  const own=m.civic.actions.filter(x=>x.ownerId===id),previous=own.find(x=>x.nightId===m.nightId||x.requestId===a.requestId);
  if(previous){if(previous.nightId===m.nightId&&previous.requestId===a.requestId&&previous.targetId===a.targetId)return{duplicate:true};throw Error('이미 확정한 행동은 변경할 수 없습니다.');}
- if(role==='bodyguard'&&(own.length>=1||a.targetId===id||!m.alive.includes(a.targetId)))throw Error('남은 보호 횟수와 다른 생존 대상을 확인하세요.');
+ if(role==='bodyguard'&&(a.targetId===id||!m.alive.includes(a.targetId)))throw Error('자신 이외의 생존 보호 대상을 확인하세요.');
  if(role==='coroner'&&(!m.ids.includes(a.targetId)||m.alive.includes(a.targetId)))throw Error('이미 사망한 참가자만 검시할 수 있습니다.');
  const action:CivicAction={id:randomUUID(),gameSessionId:m.id,ownerId:id,roleId:role,targetId:a.targetId,nightId:m.nightId,day:m.day,requestId:a.requestId,at:now};
  persistCivic(action);m.civic.actions.push(action);return{duplicate:false};
@@ -46,7 +46,7 @@ export function civicNightResults(m:MafiaState,protectedTarget:string|undefined)
 export function civicView(m:MafiaState,id:string){
  if(!m.ids.includes(id))return undefined;const role=m.roleById[id];if(!['judge','bodyguard','coroner','postman'].includes(role))return undefined;
  const own=m.civic.actions.filter(x=>x.ownerId===id),post=m.communications.messages.filter(x=>x.ownerId===id),e=m.executionPending;
- const remaining=role==='judge'?1-own.filter(x=>x.cancel).length:role==='bodyguard'?1-own.length:role==='postman'?2-post.length:null;
+ const remaining=role==='judge'?1-own.filter(x=>x.cancel).length:role==='postman'?2-post.length:null;
  const submitted=role==='judge'?!!e?.decision:role==='postman'?post.some(x=>x.nightId===m.nightId):own.some(x=>x.nightId===m.nightId&&x.roleId!=='judge');
  const targets=role==='coroner'?m.ids.filter(t=>!m.alive.includes(t)):m.alive.filter(t=>t!==id);
  const canSend=m.alive.includes(id)&&!submitted&&(remaining===null||remaining>0)&&(role==='judge'?m.phase==='EXECUTION_PENDING'&&!!e&&Date.now()<e.endsAt:m.phase==='NIGHT'&&Date.now()<m.nightEndsAt&&targets.length>0);

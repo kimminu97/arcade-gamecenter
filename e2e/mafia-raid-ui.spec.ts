@@ -35,9 +35,9 @@ for(const chatEnabled of [true,false])test(`5인 습격 투표 UI · 채팅 ${ch
   else await expect(p.getByTestId('mafia-chat')).toHaveCount(0);
   await close(p);
   if(chatEnabled){const mimic=players.find(p=>own(p).ownRole.roleId==='mimic')!;await mimic.getByRole('button',{name:'마피아 채팅 잠입',exact:true}).click();await open(mimic);await expect(mimic.getByTestId('mafia-team-panel').getByRole('heading',{level:2})).toHaveText('마피아 비밀 채팅');await expect(mimic.getByTestId('mafia-attack')).toHaveCount(0);await close(mimic);}
-  await next('바로 낮으로','DAY_ANNOUNCEMENT');
+  await next('바로 낮으로','DAY_DISCUSSION');
   if(chatEnabled){await open(p);await expect(panel.getByRole('heading',{level:2})).toHaveText('마피아 비밀 채팅');await close(p);}else await expect(p.locator('.mafia-team-launch')).toHaveCount(0);
-  for(const [label,phase] of [['낮 토론 시작','DAY_DISCUSSION'],['처형 투표 시작','DAY_VOTE'],['투표 마감','DAY_RESOLUTION'],['다음 밤 시작','NIGHT']])await next(label,phase);
+  for(const [label,phase] of [['처형 투표 시작','DAY_VOTE'],['투표 마감','DAY_RESOLUTION'],['다음 밤 시작','NIGHT']])await next(label,phase);
   await expect.poll(()=>own(p).attack?.available).toBe(true);await open(p);await visibleTargets();await panel.screenshot({path:info.outputPath('raid-ready.png')});
   const target=await id(p);await raid.locator(`[data-attack-target-id="${target}"]`).click();await expect(raid.locator(`[data-attack-target-id="${target}"]`)).toHaveAttribute('aria-pressed','true');expect(own(p).attack.locked).toBe(false);
   await open(mafia[1]);await mafia[1].locator(`[data-attack-target-id="${await id(mafia[1])}"]`).click();await expect.poll(()=>own(mafia[1]).selectedTargetId).toBe(await id(mafia[1]));expect(own(mafia[1]).attack.locked).toBe(false);

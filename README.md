@@ -6,6 +6,8 @@
 
 ## Windows 실행
 
+ZIP 복원·LAN/방화벽·HDMI·데이터 백업 절차는 [Windows 로컬 플레이 가이드](WINDOWS-LOCAL.md)를 참고하세요.
+
 Node.js 24 이상과 npm을 설치한 뒤 실행하세요. 카카오톡 분석의 내장 SQLite를 사용합니다.
 
 ```powershell

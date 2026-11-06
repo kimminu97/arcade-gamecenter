@@ -1,3 +1,4 @@
+import {expectFinalRoles} from './mafia-helpers';
 import {test,expect,type BrowserContext,type Page} from '@playwright/test';
 test.setTimeout(150000);
 for(const [n,outcome] of [[5,'correct'],[6,'timeout']] as const)test(`${n}인 복수귀 모바일: ${outcome}·개인 후보·실제15초·새로고침`,async({browser},info)=>{
@@ -12,15 +13,17 @@ for(const [n,outcome] of [[5,'correct'],[6,'timeout']] as const)test(`${n}인 �
  while(Object.values(states.get(h).mafiaSetup.config.direct).reduce((a:number,b:any)=>a+b,0)<n)await change('일반 시민','citizen',1);
  await h.locator('.host-controls > .yellow').click();await h.getByRole('button',{name:'확인하고 진행',exact:true}).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','ROLE_REVEAL');for(const p of players)await expect(p.getByTestId('mafia-own-role')).toBeVisible();
  const m=()=>states.get(h).round.mafia,own=(p:Page)=>states.get(p).round.mafia,id=(p:Page)=>m().ids[players.indexOf(p)],revenant=players.find(p=>own(p).ownRole.roleId==='revenant')!,mafia=players.find(p=>own(p).ownRole.team==='mafia')!;
- for(const name of ['첫 번째 밤 시작','바로 낮으로','낮 토론 시작','처형 투표 시작'])await h.getByRole('button',{name,exact:true}).click();
+ const assigned=Object.fromEntries(players.map((p,i)=>[id(p),{playerName:'복수친구'+i,roleName:own(p).ownRole.roleName,team:own(p).ownRole.team}]));for(const p of[h,...players])await expect(p.getByTestId('mafia-final-roles')).toHaveCount(0);
+ for(const name of ['첫 번째 밤 시작','바로 낮으로','처형 투표 시작'])await h.getByRole('button',{name,exact:true}).click();
  for(const p of players)await p.locator(`[data-target-id="${id(revenant)}"]`).click();await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','EXECUTION_PENDING');await expect(revenant.getByTestId('mafia-revenge')).toBeVisible({timeout:22000});
  expect(m().alive).not.toContain(id(revenant));await expect(h.getByTestId('revenge-waiting')).toHaveText('복수귀의 마지막 선택 진행 중');await expect(h.getByRole('button',{name:'복수귀의 마지막 선택 진행 중',exact:true})).toBeDisabled();
- await Promise.all([h,...players.filter(p=>p!==revenant)].map(async p=>{await expect.poll(()=>own(p).phase).toBe('REVENGE_PENDING');expect(own(p).revenge).toBeUndefined();await expect(p.getByTestId('mafia-revenge')).toHaveCount(0);}));
+ await Promise.all([h,...players.filter(p=>p!==revenant)].map(async p=>{await expect.poll(()=>own(p).phase).toBe('REVENGE_PENDING');expect(own(p).revenge).toBeUndefined();expect(own(p).revealedRoles).toBeUndefined();await expect(p.getByTestId('mafia-final-roles')).toHaveCount(0);await expect(p.getByTestId('mafia-revenge')).toHaveCount(0);}));
  const selector=revenant.getByLabel('마지막 추측 대상',{exact:true});await expect(selector.locator('option')).toHaveCount(n);expect(own(revenant).revenge.candidates).not.toContain(id(revenant));
- const deadline=own(revenant).revenge.endsAt;await revenant.reload({waitUntil:'domcontentloaded'});await expect(revenant.getByTestId('mafia-revenge')).toBeVisible();expect(own(revenant).revenge.endsAt).toBe(deadline);await expect(revenant.getByTestId('revenge-seconds')).toContainText('00:');
+ expect(own(revenant).revealedRoles).toBeUndefined();await expect(revenant.getByTestId('mafia-final-roles')).toHaveCount(0);const deadline=own(revenant).revenge.endsAt;await revenant.reload({waitUntil:'domcontentloaded'});await expect(revenant.getByTestId('mafia-revenge')).toBeVisible();expect(own(revenant).revenge.endsAt).toBe(deadline);await expect(revenant.getByTestId('revenge-seconds')).toContainText('00:');
  if(outcome==='correct'){
  await selector.selectOption(id(mafia));cancel=true;await revenant.getByRole('button',{name:'최종 추측 확정',exact:true}).click();cancel=false;await expect(revenant.getByTestId('mafia-revenge')).toBeVisible();await expect(selector).toHaveValue(id(mafia));
  await revenant.getByRole('button',{name:'최종 추측 확정',exact:true}).click();await expect(h.getByTestId('neutral-winner')).toContainText('복수귀');await expect(revenant.getByTestId('neutral-winner')).toContainText('단독 승리자');expect(m().winnerPlayerIds).toEqual([id(revenant)]);expect(states.get(h).history).toHaveLength(1);
+ for(const p of[h,...players])await expectFinalRoles(p,assigned);await h.reload();await expectFinalRoles(h,assigned);await revenant.reload();await expectFinalRoles(revenant,assigned);await h.getByTestId('mafia-final-roles').screenshot({path:info.outputPath('neutral-final-roles-tv.png')});await revenant.getByTestId('mafia-final-roles').screenshot({path:info.outputPath('neutral-final-roles-phone.png')});
  // Capture after the choice so rendering cannot consume the real 15-second window.
  await revenant.screenshot({path:info.outputPath('revenant-phone.png')});
  }else{await expect(h.getByTestId('arcade')).toHaveAttribute('data-phase','DAY_RESOLUTION',{timeout:20000});await expect(revenant.getByTestId('mafia-revenge')).toHaveCount(0);expect(m().winner).toBeUndefined();expect(states.get(h).history).toHaveLength(0);}

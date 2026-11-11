@@ -28,7 +28,7 @@ import {createServer} from 'node:http';
 import {networkInterfaces} from 'node:os';
 import {lanAddresses} from './network-addresses';
 import {Server} from 'socket.io';
-import {createRoom,join,rooms,start,advance,finish,view,progressMafia,extendMafia,nextYang,endYang,chooseYangTopic} from './game';
+import {createRoom,join,kickPlayer,rooms,start,advance,finish,view,progressMafia,extendMafia,nextYang,endYang,chooseYangTopic} from './game';
 const app=express(),http=createServer(app),io=new Server(http,{maxHttpBufferSize:20000});
 const port=Number(process.env.PORT||3000);
 installChat(app);
@@ -60,6 +60,18 @@ io.on('connection',s=>{
  case 'start':if(r.gameSession&&!r.gameSession.endedAt&&(r.roulette?.mode||a.mode)!==r.gameSession.mode)throw Error('현재 게임 종료 시상식을 먼저 마치세요.');if(a.mode==='mafia'){const out=startMafiaRequest(r,a);ack({ok:true,...out});broadcast(r.code);return;}start(r,a.mode);break;case 'advance':if(r.round?.mafia)throw Error('마피아 전용 단계 진행을 사용하세요.');advance(r);break;case 'reveal':finish(r);break;
  case 'pause':{const g=r.round;if(g?.mafia)throw Error('마피아 전용 밤 제어를 사용하세요.');if(g&&g.phase!=='result'&&g.mode!=='yang'){if(g.paused){g.deadline=g.paused===-1?0:Date.now()+g.paused;g.paused=0;}else g.paused=g.deadline?Math.max(1,g.deadline-Date.now()):-1;}break;}
  case 'extend':if(r.round?.mafia)throw Error('마피아 전용 밤 연장을 사용하세요.');if(r.round&&r.round.deadline){if(r.round.paused)r.round.paused+=15000;else r.round.deadline+=15000;}break;
+ case 'kick':{
+  const player=kickPlayer(r,a.id);
+  const peer=io.sockets.sockets.get(player.socket);
+  if(peer?.data.code===r.code&&peer.data.role==='player'&&peer.data.playerId===player.id){
+   // Room broadcasts and action authorization both use socket.data.
+   peer.data={};
+   peer.leave(r.code);
+   peer.emit('kicked');
+  }
+  message='참가자를 강퇴했습니다.';
+  break;
+ }
  case 'exclude':{if(r.round?.mafia&&r.round.phase!=='result')throw Error('마피아 진행 중에는 참가자를 제외할 수 없습니다. 대기 또는 게임 중단을 이용하세요.');const p=r.players.find(p=>p.id===a.id);if(!p)throw Error('참가자가 없습니다.');p.excluded=!p.excluded;const g=r.round;if(p.excluded&&g&&g.phase!=='result'){g.ids=g.ids.filter(id=>id!==p.id);delete g.answers[p.id];delete g.votes[p.id];delete g.predictions[p.id];delete g.numbers[p.id];for(const id of Object.keys(g.votes))if(g.votes[id]===p.id)delete g.votes[id];g.correct=g.correct.filter(id=>id!==p.id);if(g.ids.length<2||g.spy===p.id||g.drawer===p.id){r.round=null;}}break;}
  case 'score':{if(r.final)throw Error('최종 결과 공개 후에는 점수를 수정할 수 없습니다.');const p=r.players.find(p=>p.id===a.id);if(!p||!Number.isInteger(a.score)||Math.abs(a.score)>99999)throw Error('점수를 확인하세요.');p.score=a.score;break;}
  case 'stop':if(r.gameSession&&!r.gameSession.endedAt)endAwardGame(r,r.gameSession.id);else if(!r.ceremony){r.round=null;r.roulette=null;}break;case 'final':if(r.gameSession&&!r.gameSession.endedAt)throw Error('게임 종료 시상식을 먼저 마치세요.');if(r.ceremony)throw Error('게임별 시상식을 먼저 마치세요.');if(r.round&&r.round.phase!=='result')throw Error('라운드를 먼저 끝내세요.');if(!r.history.length)throw Error('한 라운드 이상 진행하세요.');if(r.roulette&&Date.now()<r.roulette.endsAt)throw Error('룰렛이 끝난 뒤 시상식을 여세요.');r.roulette=null;r.final=true;break;case 'reset':r.gameSession=undefined;r.ceremony=undefined;r.yangUsed={};r.yangLastTopic=undefined;r.questionDecks={};r.bankUsed={};r.spyUsed=[];r.chatUsed=[];r.roulette=null;r.final=false;r.round=null;r.history=[];r.turn=0;r.drawOrder=[];r.players.forEach(p=>p.score=0);break;default:throw Error('알 수 없는 요청');}}

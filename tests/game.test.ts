@@ -1,5 +1,5 @@
 import{test}from'node:test';import assert from'node:assert/strict';
-import{createRoom,join,start,submit,view,advance,finish}from'../server/game';
+import{createRoom,join,kickPlayer,start,submit,view,advance,finish}from'../server/game';
 import data from '../server/questions.json';
 import {spyQuestions} from '../server/spy-bank';import {spyValue} from './spy-helper';
 function setup(n=5){const r=createRoom('host');for(let i=0;i<n;i++)join(r,`친구${i}`,'🐱',`s${i}`);return r;}
@@ -9,3 +9,25 @@ test('재판 이진 예측 이전 득표 비공개, 정확도 보상',()=>{const
 test('숫자 비밀, 중복 탈락, 공동 우승, 미제출',()=>{const r=setup();start(r,'number');r.round!.target=50;const[a,b,c,d,e]=r.players;submit(r,a.id,40);assert.ok(!JSON.stringify(view(r,b.id)).includes('"numbers"'));submit(r,b.id,40);submit(r,c.id,49);submit(r,d.id,51);finish(r);assert.deepEqual(r.players.map(p=>p.score),[0,0,150,150,0]);});
 test('전원 중복 숫자 무승부',()=>{const r=setup(2);r.test=true;start(r,'number');r.players.forEach(p=>submit(r,p.id,10));assert.deepEqual(r.round!.result.winners,[]);});
 test('그림 제시어 비밀, 중복 정답 차단, 모든 화가 순환',()=>{const r=setup(3);r.test=true;const drawers=new Set();for(let i=0;i<3;i++){start(r,'draw');const g=r.round!;drawers.add(g.drawer);const p=r.players.find(p=>p.id!==g.drawer)!;assert.equal(view(r,'',true).round?.word,undefined);assert.equal(view(r,p.id).round?.word,undefined);submit(r,p.id,g.secret);assert.throws(()=>submit(r,p.id,g.secret));finish(r);assert.ok(r.players.find(p=>p.id===g.drawer)!.score>=40);}assert.equal(drawers.size,3);});
+
+test('대기실 강퇴는 연결이 끊긴 참가자의 자리와 재접속 정보를 제거한다',()=>{
+ const r=setup(7),target=r.players[0];
+ target.online=false;
+ r.drawOrder=[target.id,r.players[1].id];
+ assert.equal(view(r,'',true).canKick,true);
+ assert.equal(view(r,target.id).canKick,false);
+ assert.equal(kickPlayer(r,target.id),target);
+ assert.equal(r.players.some(p=>p.token===target.token),false);
+ assert.deepEqual(r.drawOrder,[r.players[0].id]);
+ assert.throws(()=>kickPlayer(r,target.id),/참가자가 없습니다/);
+ assert.notEqual(join(r,target.name,target.avatar,'fresh').id,target.id);
+ assert.equal(r.players.length,7);
+});
+test('게임 진행과 결과 화면에서는 강퇴할 수 없다',()=>{
+ const r=setup(),target=r.players[0];
+ start(r,'number');
+ assert.throws(()=>kickPlayer(r,target.id),/대기실/);
+ finish(r);
+ assert.throws(()=>kickPlayer(r,target.id),/대기실/);
+ assert.equal(r.players.length,5);
+});
